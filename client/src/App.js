@@ -53,18 +53,53 @@ class App extends Component {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
     return (
-      <div className="App">
-        <h1>Good to Go!</h1>
-        <p>Your Truffle Box is installed and ready.</p>
-        <h2>Smart Contract Example</h2>
-        <p>
-          If your contracts compiled and migrated successfully, below will show
-          a stored value of 5 (by default).
-        </p>
-        <p>
-          Try changing the value stored on <strong>line 40</strong> of App.js.
-        </p>
-        <div>The stored value is: {this.state.storageValue}</div>
+      <div className="container">
+        <div className="row">
+          <div className="card col-7">
+            <h2>Weerweddenschappen</h2>
+            <form>
+              <div className="col-md-4 mb-3">
+                <label>Ether</label>
+                <div className="input-group">
+                  <div className="input-group-prepend">
+                    <span className="input-group-text">@</span>
+                  </div>
+                  <input type="number" className="form-control" placeholder="Ether" required />
+                </div>
+                <div className="form-group">
+                  <label>Locatie</label>
+                  <select className="form-control">
+                    <option>Rotterdam</option>
+                    <option>Amsterdam</option>
+                    <option>Breda</option>
+                    <option>Dordrecht</option>
+                    <option>Gorinchem</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Datum</label>
+                  <select className="form-control">
+                    <option>6-6-2019 12:00</option>
+                    <option>7-6-2019 12:00</option>
+                    <option>8-6-2019 12:00</option>
+                    <option>9-6-2019 12:00</option>
+                  </select>
+                </div>
+                <div style={{display: 'flex'}}>
+                  <button type="button" class="btn btn-secondary">Annuleren</button>
+                  <button type="button" class="btn btn-primary">Plaats weddenschap</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div className="col-1">
+
+          </div>
+          <div className="card col-4">
+            <h2>Wallet</h2>
+            The stored value is: {this.state.storageValue}
+          </div>
+        </div>
       </div>
     );
   }
