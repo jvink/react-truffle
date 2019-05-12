@@ -4,9 +4,9 @@ module.exports = function(deployer) {
   deployer.deploy(SimpleStorage);
 };
 
-var Election = artifacts.require("./Election.sol");
+var Bet = artifacts.require("./Bet.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(Election);
+  deployer.deploy(Bet);
 };
 
