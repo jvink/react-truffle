@@ -1,17 +1,16 @@
 import React, { Component } from "react";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./utils/getWeb3";
+import getWeather from "./Weather";
 
 import "./App.css";
 
 class App extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null };
-
+  state = { storageValue: 0, web3: null, accounts: null, contract: null, weather: null };
   componentDidMount = async () => {
     try {
       // Get network provider and web3 instance.
       const web3 = await getWeb3();
-
       // Use web3 to get the user's accounts.
       const accounts = await web3.eth.getAccounts();
 
@@ -22,7 +21,8 @@ class App extends Component {
         SimpleStorageContract.abi,
         deployedNetwork && deployedNetwork.address,
       );
-
+      const weather = await getWeather("Rotterdam");
+      this.setState({ weather });
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
       this.setState({ web3, accounts, contract: instance }, this.runExample);
@@ -35,11 +35,17 @@ class App extends Component {
     }
   };
 
+  onChangeCity = async (e) => {
+    let {value} = e.target;
+    const weather = await getWeather(value);
+    this.setState({ weather });
+  }
+
   runExample = async () => {
     const { accounts, contract } = this.state;
 
     // Stores a given value, 5 by default.
-    await contract.methods.set(5).send({ from: accounts[0] });
+    await contract.methods.set(5).send({ from: accounts[0], gas: 2000000 });
 
     // Get the value from the contract to prove it worked.
     const response = await contract.methods.get().call();
@@ -68,12 +74,12 @@ class App extends Component {
                 </div>
                 <div className="form-group">
                   <label>Locatie</label>
-                  <select className="form-control">
+                  <select className="form-control" onChange={this.onChangeCity}>
                     <option>Rotterdam</option>
                     <option>Amsterdam</option>
                     <option>Breda</option>
                     <option>Dordrecht</option>
-                    <option>Gorinchem</option>
+                    <option>Groningen</option>
                   </select>
                 </div>
                 <div className="form-group">
@@ -85,10 +91,15 @@ class App extends Component {
                     <option>9-6-2019 12:00</option>
                   </select>
                 </div>
-                <div style={{display: 'flex'}}>
-                  <button type="button" class="btn btn-secondary">Annuleren</button>
-                  <button type="button" class="btn btn-primary">Plaats weddenschap</button>
+                <div style={{ display: 'flex' }}>
+                  <button type="button" className="btn btn-secondary">Annuleren</button>
+                  <button type="button" className="btn btn-primary">Plaats weddenschap</button>
                 </div>
+              </div>
+              <div>
+                <h4>Het is nu</h4>
+                <h1>{Math.round(this.state.weather.main.temp)} C°</h1>
+                <h3>in {this.state.weather.name}</h3>
               </div>
             </form>
           </div>
@@ -97,7 +108,13 @@ class App extends Component {
           </div>
           <div className="card col-4">
             <h2>Wallet</h2>
-            The stored value is: {this.state.storageValue}
+            <p>The stored value is: {this.state.storageValue}</p>
+            <h3>Accounts: </h3>
+            <ul>
+              {this.state.accounts.map((account, i) => {
+                return <li key={i}>{account}</li>
+              })}
+            </ul>
           </div>
         </div>
       </div>
