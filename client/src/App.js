@@ -70,7 +70,7 @@ class App extends Component {
                   <div className="input-group-prepend">
                     <span className="input-group-text">@</span>
                   </div>
-                  <input type="number" className="form-control" placeholder="Ether" required />
+                  <input type="number" className="form-control" placeholder="Ether" min="1" max="1000" required />
                 </div>
                 <div className="form-group">
                   <label>Locatie</label>
