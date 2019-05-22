@@ -115,7 +115,7 @@ contract WeatherOracle is Ownable {
         uint index = _getCityBetIndex(_betId);
         CityBet storage theCityBet = citybets[index];
 
-        if (_outcome == BetOutcome.Decided)
+    //    if (_outcome == BetOutcome.Decided)
          //   require(_winning_degree >= 0 && theMatch.participantCount > uint8(_winning_degree), "invalid winning_degree");
 
         //set the outcome
