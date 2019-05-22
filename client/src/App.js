@@ -1,39 +1,28 @@
 import React, { Component } from "react";
-import SimpleStorageContract from "./contracts/SimpleStorage.json";
-import getWeb3 from "./utils/getWeb3";
 import getWeather from "./Weather";
 
 import "./App.css";
 
 class App extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null, weather: null };
+  state = { storageValue: 0, accounts: null, weather: null, loading: true, drizzleState: null, stackId:null };
   componentDidMount = async () => {
-    try {
-      // Get network provider and web3 instance.
-      const web3 = await getWeb3();
-      // Use web3 to get the user's accounts.
-      const accounts = await web3.eth.getAccounts();
-
-      // Get the contract instance.
-      const networkId = await web3.eth.net.getId();
-      const deployedNetwork = SimpleStorageContract.networks[networkId];
-      const instance = new web3.eth.Contract(
-        SimpleStorageContract.abi,
-        deployedNetwork && deployedNetwork.address,
-      );
-      const weather = await getWeather("Rotterdam");
-      this.setState({ weather });
-      // Set web3, accounts, and contract to the state, and then proceed with an
-      // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.runExample);
-    } catch (error) {
-      // Catch any errors for any of the above operations.
-      alert(
-        `Failed to load web3, accounts, or contract. Check console for details.`,
-      );
-      console.error(error);
-    }
+      const { drizzle } = this.props;
+// subscribe to changes in the store
+     this.unsubscribe = drizzle.store.subscribe( async () => {
+// every time the store updates, grab the state from drizzle
+      const drizzleState = drizzle.store.getState();
+      //get accounts
+      const accounts = drizzleState.accounts;
+      // const weather = await getWeather("Rotterdam");
+   
+      if (drizzleState.drizzleStatus.initialized) {
+        this.setState({ loading: false, drizzleState, accounts }, this.readValue);
+      }
+    });
   };
+  compomentWillUnmount() {
+    this.unsubscribe();
+  }
 
   onChangeCity = async (e) => {
     let {value} = e.target;
@@ -41,23 +30,34 @@ class App extends Component {
     this.setState({ weather });
   }
 
-  runExample = async () => {
-    const { accounts, contract } = this.state;
+  readValue = async () => {
+    const { drizzle } = this.props;
 
-    // Stores a given value, 5 by default.
-    await contract.methods.set(5).send({ from: accounts[0], gas: 2000000 });
+    const contract = drizzle.contracts.SimpleStorage;
+   //     check to see if it's ready, if so, update local component state
+   //      let drizzle know we want to watch 'sum'
+    var value = await contract.methods.get().call()
+    console.log(value)
 
-    // Get the value from the contract to prove it worked.
-    const response = await contract.methods.get().call();
-
-    // Update state with the result.
-    this.setState({ storageValue: response });
+    if(value) this.setState({storageValue: value})
   };
 
+  setValue = () => {
+    const { drizzleState } = this.state;
+    const { drizzle} = this.props;
+    const contract = drizzle.contracts.SimpleStorage;
+// let drizzle know we want to call the `add` method with `value1 and value2`
+    const stackId = contract.methods["set"].cacheSend(1000 ,{
+      from: drizzleState.accounts[0], gas: 2000000
+    });
+// save the `stackId` for later reference
+    this.setState({ stackId });
+  };
   render() {
-    if (!this.state.web3) {
-      return <div>Loading Web3, accounts, and contract...</div>;
+    if (this.state.loading ) {
+      return <div>Loading Drizzle...</div>;
     }
+// if it exists, then we display its value
     return (
       <div className="container">
         <div className="row">
@@ -74,7 +74,7 @@ class App extends Component {
                 </div>
                 <div className="form-group">
                   <label>Locatie</label>
-                  <select className="form-control" onChange={this.onChangeCity}>
+                  <select className="form-control" > 
                     <option>Rotterdam</option>
                     <option>Amsterdam</option>
                     <option>Breda</option>
@@ -93,13 +93,13 @@ class App extends Component {
                 </div>
                 <div style={{ display: 'flex' }}>
                   <button type="button" className="btn btn-secondary">Annuleren</button>
-                  <button type="button" className="btn btn-primary">Plaats weddenschap</button>
+                  <button type="button" onClick={this.setValue} className="btn btn-primary">Plaats weddenschap</button>
                 </div>
               </div>
               <div>
                 <h4>Het is nu</h4>
-                <h1>{Math.round(this.state.weather.main.temp)} C°</h1>
-                <h3>in {this.state.weather.name}</h3>
+                {/* <h1>{Math.round(this.state.weather.main.temp)} C°</h1>
+                <h3>in {this.state.weather.name}</h3> */}
               </div>
             </form>
           </div>
@@ -108,12 +108,10 @@ class App extends Component {
           </div>
           <div className="card col-4">
             <h2>Wallet</h2>
-            <p>The stored value is: {this.state.storageValue}</p>
+            <p>The stored value is: {this.state.storageValue && this.state.storageValue}</p>
             <h3>Accounts: </h3>
             <ul>
-              {this.state.accounts.map((account, i) => {
-                return <li key={i}>{account}</li>
-              })}
+              <li>{this.state.accounts && this.state.accounts[0]}</li>
             </ul>
           </div>
         </div>
@@ -123,3 +121,5 @@ class App extends Component {
 }
 
 export default App;
+
+/*} onChange={this.onChangeCity}*/
