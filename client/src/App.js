@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./utils/getWeb3";
 import getWeather from "./Weather";
+import getBets from "./BetsInterface";
 
 import "./App.css";
 
@@ -23,9 +24,6 @@ class App extends Component {
       );
       const weather = await getWeather("Rotterdam");
       this.setState({ weather });
-
-      const bets = await getAllCityBets();
-    console.log(bets);
 
       const changeContent = false;
       this.setState({changeContent})
@@ -60,12 +58,19 @@ class App extends Component {
     this.setState({ storageValue: response });
   };
 
+  initialStateChangeContent = async () => {
+    this.setState({changeContent : false})
+  }
+
   onClickChangeContent = async () => {
     this.setState({changeContent : true})
   }
 
   getBets = async () => {
+    const { contract } = this.state;
 
+    const response = await contract.methods.getAllCityBets().call();
+    console.log(response);
   }
 
   render() {
@@ -178,9 +183,9 @@ class App extends Component {
                 return <li key={i}>{account}</li>
               })}
             </ul> */}
+            <h3> Lopende weddenschappen:</h3>
             <div className="row">
-              <h2> Lopende weddenschappen:</h2>
-              <div className="card col-12" id="MijnWeddenschappenCard" onClick={this.onClickChangeContent}>
+              <div className="card col-10 offset-1" id="MijnWeddenschappenCard" onClick={this.onClickChangeContent}>
                 <h4>Weddenschap 1</h4>
                 <p>
                   Resultaat: Verloren <br/>
