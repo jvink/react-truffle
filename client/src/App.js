@@ -24,6 +24,9 @@ class App extends Component {
       const weather = await getWeather("Rotterdam");
       this.setState({ weather });
 
+      const bets = await getAllCityBets();
+    console.log(bets);
+
       const changeContent = false;
       this.setState({changeContent})
       // Set web3, accounts, and contract to the state, and then proceed with an
@@ -61,48 +64,91 @@ class App extends Component {
     this.setState({changeContent : true})
   }
 
+  getBets = async () => {
+
+  }
+
   render() {
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
 
+    // Content change after clicking the "lopende weddenschappen" card
     const changeContent = this.state.changeContent;
     let content;
     if(changeContent){
-      content = "test";
+      content = 
+      <div>
+        <h2>Weddenschap details</h2>
+        <div className="col-md-4 mb-3">
+          <label>Resultaat:</label>
+          Verloren
+
+          <label>Inzet</label>
+          <div className="input-group">
+            <div className="input-group-prepend">
+              <span className="input-group-text">$</span>
+            </div>
+            <input type="number" className="form-control" disabled="true" placeholder="9" required />
+          </div>
+          <div className="form-group">
+            <label>Locatie</label>
+            <select className="form-control" disabled="true" onChange={this.onChangeCity}>
+              <option>Rotterdam</option>
+              <option>Amsterdam</option>
+              <option>Breda</option>
+              <option>Dordrecht</option>
+              <option>Groningen</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Datum</label>
+            <select className="form-control" disabled="true">
+              <option>6-6-2019 12:00</option>
+              <option>7-6-2019 12:00</option>
+              <option>8-6-2019 12:00</option>
+              <option>9-6-2019 12:00</option>
+            </select>
+          </div>
+        </div>
+      </div>;
     }
     else{
-      content = <div className="col-md-4 mb-3">
-      <label>Ether</label>
-      <div className="input-group">
-        <div className="input-group-prepend">
-          <span className="input-group-text">@</span>
+      content = 
+      <div>
+        <h2>Weddenschappen</h2>
+        <div className="col-md-4 mb-3">
+          <label>Ether</label>
+          <div className="input-group">
+            <div className="input-group-prepend">
+              <span className="input-group-text">@</span>
+            </div>
+            <input type="number" className="form-control" placeholder="Ether" required />
+          </div>
+          <div className="form-group">
+            <label>Locatie</label>
+            <select className="form-control" onChange={this.onChangeCity}>
+              <option>Rotterdam</option>
+              <option>Amsterdam</option>
+              <option>Breda</option>
+              <option>Dordrecht</option>
+              <option>Groningen</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label>Datum</label>
+            <select className="form-control">
+              <option>6-6-2019 12:00</option>
+              <option>7-6-2019 12:00</option>
+              <option>8-6-2019 12:00</option>
+              <option>9-6-2019 12:00</option>
+            </select>
+          </div>
+          <div style={{ display: 'flex' }}>
+            <button type="button" className="btn btn-secondary">Annuleren</button>
+            <button type="button" className="btn btn-primary">Plaats weddenschap</button>
+          </div>
         </div>
-        <input type="number" className="form-control" placeholder="Ether" required />
-      </div>
-      <div className="form-group">
-        <label>Locatie</label>
-        <select className="form-control" onChange={this.onChangeCity}>
-          <option>Rotterdam</option>
-          <option>Amsterdam</option>
-          <option>Breda</option>
-          <option>Dordrecht</option>
-          <option>Groningen</option>
-        </select>
-      </div>
-      <div className="form-group">
-        <label>Datum</label>
-        <select className="form-control">
-          <option>6-6-2019 12:00</option>
-          <option>7-6-2019 12:00</option>
-          <option>8-6-2019 12:00</option>
-          <option>9-6-2019 12:00</option>
-        </select>
-      </div>
-      <div style={{ display: 'flex' }}>
-        <button type="button" className="btn btn-secondary">Annuleren</button>
-        <button type="button" className="btn btn-primary">Plaats weddenschap</button>
-      </div>
       </div>;
     }
 
@@ -111,7 +157,6 @@ class App extends Component {
       <div className="container">
         <div className="row">
           <div className="card col-7" id="WeddenschappenCard">
-            <h2>Weerweddenschappen</h2>
             <form changeContent={changeContent}>
               {content}
               <div>
