@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./utils/getWeb3";
 import getWeather from "./Weather";
+import getForeCastWeather from "./ForeCastWeather";
 
 import "./App.css";
 
 class App extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null, weather: null };
+  state = { storageValue: 0, web3: null, accounts: null, contract: null, weather: null, forecastWeather: null, date: null };
+  city = "Rotterdam";
   componentDidMount = async () => {
     try {
       // Get network provider and web3 instance.
@@ -21,8 +23,10 @@ class App extends Component {
         SimpleStorageContract.abi,
         deployedNetwork && deployedNetwork.address,
       );
-      const weather = await getWeather("Rotterdam");
+      const weather = await getWeather(this.city);
       this.setState({ weather });
+      this.state.date = weather[0].dt_txt;
+      this.state.forecastWeather = await getForeCastWeather(this.state.date, this.city)
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
       this.setState({ web3, accounts, contract: instance }, this.runExample);
@@ -37,8 +41,19 @@ class App extends Component {
 
   onChangeCity = async (e) => {
     let {value} = e.target;
+    this.city = value;
     const weather = await getWeather(value);
     this.setState({ weather });
+    const forecastWeather = await getForeCastWeather(this.state.date, this.city);
+    this.setState({ forecastWeather });
+  }
+
+  onChangeDate = async (e) => {
+    let {value} = e.target;
+    const date = value;
+    this.setState({ date })
+    const forecastWeather = await getForeCastWeather(date, this.city);
+    this.setState({ forecastWeather });
   }
 
   runExample = async () => {
@@ -84,23 +99,25 @@ class App extends Component {
                 </div>
                 <div className="form-group">
                   <label>Datum</label>
-                  <select className="form-control">
-                    <option>6-6-2019 12:00</option>
-                    <option>7-6-2019 12:00</option>
-                    <option>8-6-2019 12:00</option>
-                    <option>9-6-2019 12:00</option>
+                  <select className="form-control" onChange={this.onChangeDate}>
+                {this.state.weather.map((weather, index) => {
+                  return <option key={index}>{weather.dt_txt}</option>
+                })}
                   </select>
+                </div>
+                <div>
+                  quoteringen
                 </div>
                 <div style={{ display: 'flex' }}>
                   <button type="button" className="btn btn-secondary">Annuleren</button>
                   <button type="button" className="btn btn-primary">Plaats weddenschap</button>
                 </div>
               </div>
-              <div>
-                <h4>Het is nu</h4>
-                <h1>{Math.round(this.state.weather.main.temp)} C°</h1>
-                <h3>in {this.state.weather.name}</h3>
-              </div>
+            <div>
+              <h4>Verwachte temperatuur op {this.state.date}</h4>
+              <h1>{Math.round(this.state.forecastWeather)} C°</h1>
+              <h3>in {this.city}</h3>
+            </div>;
             </form>
           </div>
           <div className="col-1">
