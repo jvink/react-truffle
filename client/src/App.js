@@ -3,11 +3,12 @@ import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./utils/getWeb3";
 import getWeather from "./Weather";
 import getForeCastWeather from "./ForeCastWeather";
+import getQuotering from "./Quotering"
 
 import "./App.css";
 
 class App extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null, weather: null, forecastWeather: null, date: null };
+  state = { storageValue: 0, web3: null, accounts: null, contract: null, weather: null, forecastWeather: null, date: null, Quotering: null, bet: null };
   city = "Rotterdam";
   componentDidMount = async () => {
     try {
@@ -26,7 +27,8 @@ class App extends Component {
       const weather = await getWeather(this.city);
       this.setState({ weather });
       this.state.date = weather[0].dt_txt;
-      this.state.forecastWeather = await getForeCastWeather(this.state.date, this.city)
+      this.state.forecastWeather = await getForeCastWeather(this.state.date, this.city);
+      this.state.Quotering = await getQuotering(Math.round(this.state.forecastWeather), this.state.bet, this.state.weather, this.state.date)
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
       this.setState({ web3, accounts, contract: instance }, this.runExample);
@@ -46,6 +48,8 @@ class App extends Component {
     this.setState({ weather });
     const forecastWeather = await getForeCastWeather(this.state.date, this.city);
     this.setState({ forecastWeather });
+    const Quotering = await getQuotering(Math.round(forecastWeather), this.state.bet, weather, this.state.date);
+    this.setState({ Quotering });
   }
 
   onChangeDate = async (e) => {
@@ -54,6 +58,16 @@ class App extends Component {
     this.setState({ date })
     const forecastWeather = await getForeCastWeather(date, this.city);
     this.setState({ forecastWeather });
+    const Quotering = await getQuotering(Math.round(forecastWeather), this.state.bet, this.state.weather, date);
+    this.setState({ Quotering });
+  }
+
+  onChangeTemperatuur = async (e) => {
+    let {value} = e.target;
+    const bet = value;
+    this.setState({ bet });
+    const Quotering = await getQuotering(Math.round(this.state.forecastWeather), bet, this.state.weather, this.state.date);
+    this.setState({ Quotering });
   }
 
   runExample = async () => {
@@ -105,8 +119,13 @@ class App extends Component {
                 })}
                   </select>
                 </div>
-                <div>
-                  quoteringen
+                <label>Temperatuur</label>
+                <div className="form-group">
+                  <input type="number" className="form-control" placeholder="Temperatuur" onChange={this.onChangeTemperatuur} required />
+                </div>
+                <label>Quotering</label>
+                <div className="form-group">
+                  {this.state.Quotering.toFixed(2)}
                 </div>
                 <div style={{ display: 'flex' }}>
                   <button type="button" className="btn btn-secondary">Annuleren</button>
@@ -117,7 +136,7 @@ class App extends Component {
               <h4>Verwachte temperatuur op {this.state.date}</h4>
               <h1>{Math.round(this.state.forecastWeather)} C°</h1>
               <h3>in {this.city}</h3>
-            </div>;
+            </div>
             </form>
           </div>
           <div className="col-1">
