@@ -92,7 +92,7 @@ class App extends Component {
                   </select>
                 </div>
                 <div style={{ display: 'flex' }}>
-                  <button type="button" className="btn btn-secondary">Annuleren</button>
+                  <button type="button" className="btn btn-secondary">Annuleren hoi</button>
                   <button type="button" className="btn btn-primary">Plaats weddenschap</button>
                 </div>
               </div>
