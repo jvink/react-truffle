@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./utils/getWeb3";
 import getWeather from "./Weather";
-import getBets from "./BetsInterface";
 
 import "./App.css";
 
@@ -84,21 +83,21 @@ class App extends Component {
     if(changeContent){
       content = 
       <div>
-        <h2>Weddenschap details</h2>
+        <div className="flex">
+          <h2>Weddenschap details</h2>
+          <h2 className="XCursor" onClick={this.initialStateChangeContent}><i className="material-icons">clear</i></h2>
+        </div>
         <div className="col-md-4 mb-3">
-          <label>Resultaat:</label>
-          Verloren
-
           <label>Inzet</label>
           <div className="input-group">
             <div className="input-group-prepend">
               <span className="input-group-text">$</span>
             </div>
-            <input type="number" className="form-control" disabled="true" placeholder="9" required />
+            <input type="number" className="form-control" disabled={true} placeholder="9" required />
           </div>
           <div className="form-group">
             <label>Locatie</label>
-            <select className="form-control" disabled="true" onChange={this.onChangeCity}>
+            <select className="form-control" disabled={true} onChange={this.onChangeCity}>
               <option>Rotterdam</option>
               <option>Amsterdam</option>
               <option>Breda</option>
@@ -108,13 +107,15 @@ class App extends Component {
           </div>
           <div className="form-group">
             <label>Datum</label>
-            <select className="form-control" disabled="true">
+            <select className="form-control" disabled={true}>
               <option>6-6-2019 12:00</option>
               <option>7-6-2019 12:00</option>
               <option>8-6-2019 12:00</option>
               <option>9-6-2019 12:00</option>
             </select>
           </div>
+          <label>Resultaat:</label>
+          Verloren
         </div>
       </div>;
     }
@@ -184,7 +185,7 @@ class App extends Component {
               })}
             </ul> */}
             <h3> Lopende weddenschappen:</h3>
-            <div className="row">
+            <div>
               <div className="card col-10 offset-1" id="MijnWeddenschappenCard" onClick={this.onClickChangeContent}>
                 <h4>Weddenschap 1</h4>
                 <p>
