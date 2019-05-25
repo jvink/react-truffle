@@ -6,9 +6,10 @@ import * as serviceWorker from './serviceWorker';
 // import drizzle functions and contract artifact
 import { Drizzle, generateStore } from "drizzle";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
+import WeatherBetsContract from "./contracts/WeatherBets.json";
 
 // let drizzle know what contracts we want
-const options = { contracts: [SimpleStorageContract] };
+const options = { contracts: [SimpleStorageContract, WeatherBetsContract] };
 // setup the drizzle store and drizzle
 const drizzleStore = generateStore(options);
 

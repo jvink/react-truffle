@@ -1,5 +1,4 @@
 pragma solidity ^0.5.0;
-pragma experimental ABIEncoderV2;
 
 contract OracleInterface {
 
@@ -11,28 +10,44 @@ contract OracleInterface {
 
     function getAllCityBets() public view returns (bytes32[] memory);
 
-    function cityBetExists(bytes32 _matchId) public view returns (bool);
+    function cityBetExists(bytes32 _betId) public view returns (bool);
 
-    function getCityBet(bytes32 _matchId) public view returns (
-        bytes32 betId, //id van de bet
+    function addCityBet(address sender, string memory _cityId, string memory _cityName, uint _inzet, uint _guess,
+    uint _made_on, uint _weather_date) public returns (bytes32);
+
+    function getCityBet(bytes32 _betId) public view returns (
+        address userId,
+        bytes32 betId,//id van de bet
         string memory city_id, //id van city
         string memory name,  // naam van de stad
+        uint inzet,
+        uint guess,
+        uint made_on,  // datum wanneer de bet is gemaakt
         uint weather_date, //
-        BetOutcome outcome, // outcome van de weddenschap
+         BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
-        int winning_degree); // Welke temperatuur het is geworden
+       // WeatherData weather;
+        int winning_degree // Welke temperatuur het is geworden
+        ); // Welke temperatuur het is geworden
 
     function getMostRecentCityBet(bool _pending) public view returns (
-        bytes32 betId, //id van de bet
+        address userId,
+        bytes32 betId,//id van de bet
         string memory city_id, //id van city
         string memory name,  // naam van de stad
+        uint inzet,
+        uint guess,
+        uint made_on,  // datum wanneer de bet is gemaakt
         uint weather_date, //
-        BetOutcome outcome, // outcome van de weddenschap
+         BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
+       // WeatherData weather;
         int winning_degree // Welke temperatuur het is geworden
          );
 
     function testConnection() public pure returns (bool);
+
+    function getAddress() public view returns (address);
 
     function addTestData() public;
 }
