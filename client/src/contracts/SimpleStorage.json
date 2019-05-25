@@ -6,38 +6,38 @@
       "inputs": [
         {
           "indexed": false,
-          "name": "storedData",
-          "type": "uint256"
+          "name": "url",
+          "type": "string"
         }
       ],
-      "name": "stored",
+      "name": "HTTPRequest",
       "type": "event"
     },
     {
       "constant": false,
       "inputs": [
         {
-          "name": "url",
-          "type": "string",
+          "name": "x",
+          "type": "uint256",
           "indexed": false
         }
       ],
-      "name": "HTTPRequest",
+      "name": "set",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "event",
+      "type": "function",
       "anonymous": false
     },
     {
-      "constant": false,
+      "constant": true,
       "inputs": [
         {
           "name": "x",
           "type": "uint256"
         }
       ],
-      "name": "set",
+      "name": "get",
       "outputs": [
         {
           "name": "",
@@ -45,7 +45,7 @@
         }
       ],
       "payable": false,
-      "stateMutability": "nonpayable",
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -74,10 +74,10 @@
     "absolutePath": "/C/Users/jsuij/Documents/github/react-truffle/contracts/SimpleStorage.sol",
     "exportedSymbols": {
       "SimpleStorage": [
-        221
+        217
       ]
     },
-    "id": 222,
+    "id": 218,
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -97,9 +97,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 221,
+        "id": 217,
         "linearizedBaseContracts": [
-          221
+          217
         ],
         "name": "SimpleStorage",
         "nodeType": "ContractDefinition",
@@ -109,7 +109,7 @@
             "id": 190,
             "name": "storedData",
             "nodeType": "VariableDeclaration",
-            "scope": 221,
+            "scope": 217,
             "src": "55:15:3",
             "stateVariable": true,
             "storageLocation": "default",
@@ -244,12 +244,12 @@
               ]
             },
             "documentation": null,
-            "id": 194,
+            "id": 204,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "stored",
-            "nodeType": "EventDefinition",
+            "name": "set",
+            "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 193,
               "nodeType": "ParameterList",
@@ -257,10 +257,10 @@
                 {
                   "constant": false,
                   "id": 192,
-                  "name": "storedData",
+                  "name": "x",
                   "nodeType": "VariableDeclaration",
-                  "scope": 194,
-                  "src": "88:15:3",
+                  "scope": 204,
+                  "src": "90:6:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -271,7 +271,7 @@
                     "id": 191,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "88:4:3",
+                    "src": "90:4:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -282,7 +282,7 @@
                   "indexed": false
                 }
               ],
-              "src": "87:17:3"
+              "src": "89:8:3"
             },
             "returnParameters": {
               "id": 194,
@@ -291,7 +291,7 @@
               "src": "105:0:3"
             },
             "scope": 217,
-            "src": "75:30:3",
+            "src": "77:195:3",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public",
@@ -299,19 +299,19 @@
           },
           {
             "body": {
-              "id": 207,
+              "id": 211,
               "nodeType": "Block",
-              "src": "139:167:3",
+              "src": "320:30:3",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 201,
+                    "id": 209,
                     "name": "storedData",
-                    "nodeType": "Assignment",
+                    "nodeType": "Identifier",
                     "overloadedDeclarations": [],
                     "referencedDeclaration": 190,
-                    "src": "146:14:3",
+                    "src": "334:10:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -349,9 +349,9 @@
                     }
                   },
                   "functionReturnParameters": 208,
-                  "id": 202,
-                  "nodeType": "ExpressionStatement",
-                  "src": "146:14:3"
+                  "id": 210,
+                  "nodeType": "Return",
+                  "src": "327:17:3"
                 },
                 {
                   "eventCall": {
@@ -415,14 +415,14 @@
               ]
             },
             "documentation": null,
-            "id": 208,
+            "id": 212,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "set",
+            "name": "get",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 197,
+              "id": 205,
               "nodeType": "ParameterList",
               "parameters": [
                 {
@@ -452,10 +452,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "123:8:3"
+              "src": "290:2:3"
             },
             "returnParameters": {
-              "id": 198,
+              "id": 208,
               "nodeType": "ParameterList",
               "parameters": [
                 {
@@ -485,11 +485,11 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "139:0:3"
+              "src": "313:6:3"
             },
-            "scope": 221,
-            "src": "111:195:3",
-            "stateMutability": "nonpayable",
+            "scope": 217,
+            "src": "278:72:3",
+            "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
           },
@@ -497,10 +497,10 @@
             "anonymous": false,
             "documentation": null,
             "id": 216,
-            "name": "get",
-            "nodeType": "FunctionDefinition",
+            "name": "HTTPRequest",
+            "nodeType": "EventDefinition",
             "parameters": {
-              "id": 209,
+              "id": 215,
               "nodeType": "ParameterList",
               "parameters": [
                 {
@@ -531,9 +531,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "324:2:3"
+              "src": "373:28:3"
             },
-            "src": "312:72:3",
+            "src": "356:46:3",
             "body": {
               "id": 215,
               "nodeType": "Block",
@@ -644,20 +644,20 @@
             "src": "390:46:3"
           }
         ],
-        "scope": 222,
-        "src": "27:412:3"
+        "scope": 218,
+        "src": "27:378:3"
       }
     ],
-    "src": "0:441:3"
+    "src": "0:407:3"
   },
   "legacyAST": {
     "absolutePath": "/C/Users/jsuij/Documents/github/react-truffle/contracts/SimpleStorage.sol",
     "exportedSymbols": {
       "SimpleStorage": [
-        221
+        217
       ]
     },
-    "id": 222,
+    "id": 218,
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -677,9 +677,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 221,
+        "id": 217,
         "linearizedBaseContracts": [
-          221
+          217
         ],
         "name": "SimpleStorage",
         "nodeType": "ContractDefinition",
@@ -689,7 +689,7 @@
             "id": 190,
             "name": "storedData",
             "nodeType": "VariableDeclaration",
-            "scope": 221,
+            "scope": 217,
             "src": "55:15:3",
             "stateVariable": true,
             "storageLocation": "default",
@@ -824,12 +824,12 @@
               ]
             },
             "documentation": null,
-            "id": 194,
+            "id": 204,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "stored",
-            "nodeType": "EventDefinition",
+            "name": "set",
+            "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 193,
               "nodeType": "ParameterList",
@@ -837,10 +837,10 @@
                 {
                   "constant": false,
                   "id": 192,
-                  "name": "storedData",
+                  "name": "x",
                   "nodeType": "VariableDeclaration",
-                  "scope": 194,
-                  "src": "88:15:3",
+                  "scope": 204,
+                  "src": "90:6:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -851,7 +851,7 @@
                     "id": 191,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
-                    "src": "88:4:3",
+                    "src": "90:4:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -862,7 +862,7 @@
                   "indexed": false
                 }
               ],
-              "src": "87:17:3"
+              "src": "89:8:3"
             },
             "returnParameters": {
               "id": 194,
@@ -871,7 +871,7 @@
               "src": "105:0:3"
             },
             "scope": 217,
-            "src": "75:30:3",
+            "src": "77:195:3",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public",
@@ -879,19 +879,19 @@
           },
           {
             "body": {
-              "id": 207,
+              "id": 211,
               "nodeType": "Block",
-              "src": "139:167:3",
+              "src": "320:30:3",
               "statements": [
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 201,
+                    "id": 209,
                     "name": "storedData",
-                    "nodeType": "Assignment",
+                    "nodeType": "Identifier",
                     "overloadedDeclarations": [],
                     "referencedDeclaration": 190,
-                    "src": "146:14:3",
+                    "src": "334:10:3",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -929,9 +929,9 @@
                     }
                   },
                   "functionReturnParameters": 208,
-                  "id": 202,
-                  "nodeType": "ExpressionStatement",
-                  "src": "146:14:3"
+                  "id": 210,
+                  "nodeType": "Return",
+                  "src": "327:17:3"
                 },
                 {
                   "eventCall": {
@@ -995,14 +995,14 @@
               ]
             },
             "documentation": null,
-            "id": 208,
+            "id": 212,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "set",
+            "name": "get",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 197,
+              "id": 205,
               "nodeType": "ParameterList",
               "parameters": [
                 {
@@ -1032,10 +1032,10 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "123:8:3"
+              "src": "290:2:3"
             },
             "returnParameters": {
-              "id": 198,
+              "id": 208,
               "nodeType": "ParameterList",
               "parameters": [
                 {
@@ -1065,11 +1065,11 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "139:0:3"
+              "src": "313:6:3"
             },
-            "scope": 221,
-            "src": "111:195:3",
-            "stateMutability": "nonpayable",
+            "scope": 217,
+            "src": "278:72:3",
+            "stateMutability": "view",
             "superFunction": null,
             "visibility": "public"
           },
@@ -1077,10 +1077,10 @@
             "anonymous": false,
             "documentation": null,
             "id": 216,
-            "name": "get",
-            "nodeType": "FunctionDefinition",
+            "name": "HTTPRequest",
+            "nodeType": "EventDefinition",
             "parameters": {
-              "id": 209,
+              "id": 215,
               "nodeType": "ParameterList",
               "parameters": [
                 {
@@ -1111,9 +1111,9 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "324:2:3"
+              "src": "373:28:3"
             },
-            "src": "312:72:3",
+            "src": "356:46:3",
             "body": {
               "id": 215,
               "nodeType": "Block",
@@ -1224,11 +1224,11 @@
             "src": "390:46:3"
           }
         ],
-        "scope": 222,
-        "src": "27:412:3"
+        "scope": 218,
+        "src": "27:378:3"
       }
     ],
-    "src": "0:441:3"
+    "src": "0:407:3"
   },
   "compiler": {
     "name": "solc",

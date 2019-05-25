@@ -1,11 +1,10 @@
 pragma solidity ^0.5.0;
-pragma experimental ABIEncoderV2;
 
 import "./Ownable.sol";
 import "./DateLib.sol";
 
 /*
-TEST: 
+TEST:
 - testConnection
 - getAddress
 - cityBetExists(0)
@@ -45,9 +44,13 @@ contract WeatherOracle is Ownable {
 
     //defines a CityBet along with its outcome
     struct CityBet {
+        address userId;
         bytes32 betId; //id van de bet
         string city_id; //id van city
         string name;  // naam van de stad
+        uint inzet;
+        uint guess;
+        uint made_on;  // datum wanneer de bet is gemaakt
         uint weather_date; //
         BetOutcome outcome; // outcome van de weddenschap
         uint quotering;
@@ -86,17 +89,18 @@ contract WeatherOracle is Ownable {
     /// @param _cityName descriptive name for the CityBet (e.g. Pac vs. Mayweather 2016)
     /// @param _weather_date weather_date set for the CityBet
     /// @return the unique id of the newly created CityBet
-        function addCityBet(string memory _cityId, string memory _cityName, uint _weather_date) public onlyOwner  returns (bytes32){
+        function addCityBet(address sender, string memory _cityId, string memory _cityName, uint _inzet,
+        uint _guess, uint _made_on, uint _weather_date) public returns (bytes32){
 
         //hash the crucial info to get a unique id
-        bytes32 id = keccak256(abi.encodePacked(_cityName, _weather_date));
+        bytes32 id = keccak256(abi.encodePacked(_cityName, _weather_date, sender));
         uint quotering = 11; // test
 
         //require that the CityBet be unique (not already added)
         require(!cityBetExists(id), "does exist already");
 
-        //add the CityBet
-        uint newIndex = citybets.push(CityBet(id, _cityId, _cityName, _weather_date, BetOutcome.Pending, quotering, -100))-1;
+        uint newIndex = citybets.push(CityBet(sender, id, _cityId, _cityName, _inzet, _guess, _made_on, _weather_date,
+        BetOutcome.Pending, quotering, -100))-1;
         cityIdToIndex[id] = newIndex+1;
 
         //return the unique id of the new CityBet
@@ -169,22 +173,27 @@ contract WeatherOracle is Ownable {
     /// @param _betId the unique id of the desired weather
     /// @return CityBet data of the specified weather
     function getCityBet(bytes32 _betId) public view returns (
+        address userId,
         bytes32 betId,//id van de bet
         string memory city_id, //id van city
         string memory name,  // naam van de stad
-        uint weather_date,
-        BetOutcome outcome, // outcome van de weddenschap
-       // WeatherData memory weather,
+        uint inzet,
+        uint guess,
+        uint made_on,  // datum wanneer de bet is gemaakt
+        uint weather_date, //
+         BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
+       // WeatherData weather;
         int winning_degree // Welke temperatuur het is geworden
      ) {
         //get the weather
         if (cityBetExists(_betId)) {
             CityBet storage theCity = citybets[_getCityBetIndex(_betId)];
-            return (theCity.betId, theCity.city_id, theCity.name, theCity.weather_date, theCity.outcome, theCity.quotering, theCity.winning_degree);
+            return (theCity.userId,theCity.betId, theCity.city_id, theCity.name, theCity.inzet, theCity.guess, theCity.made_on, theCity.weather_date,
+            theCity.outcome, theCity.quotering, theCity.winning_degree);
         }
         else {
-            return (_betId, "", "", 0, BetOutcome.Pending, 0, -1);
+            return (address(0x0), _betId, "", "", 0, 0, 0, 0, BetOutcome.Pending, 0, -1);
         }
     }
 
@@ -192,13 +201,17 @@ contract WeatherOracle is Ownable {
     /// @param _pending if true, will return only the most recent pending CityBet; otherwise, returns the most recent CityBet either pending or completed
     /// @return CityBet data
     function getMostRecentCityBet(bool _pending) public view returns (
+        address userId,
         bytes32 betId,//betId van de bet
         string memory city_id, //id van city
         string memory name,  // naam van de stad
-        uint weather_date,
-        BetOutcome outcome, // outcome van de weddenschap
-       // WeatherData memory weather,
+        uint inzet,
+        uint guess,
+        uint made_on,  // datum wanneer de bet is gemaakt
+        uint weather_date, //
+         BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
+       // WeatherData weather;
         int winning_degree // Welke temperatuur het is geworden
         ) {
 
@@ -227,14 +240,14 @@ contract WeatherOracle is Ownable {
 
     /// @notice for testing  string memory _cityId, string memory _cityName, uint _weather_date
     function addTestData() external onlyOwner {
-        addCityBet("2471883", "Rotterdam", DateLib.DateTime(2018, 8, 13, 0, 0, 0, 0, 0).toUnixTimestamp());
-        addCityBet("2329929", "Amsterdam", DateLib.DateTime(2018, 8, 15, 0, 0, 0, 0, 0).toUnixTimestamp());
-        addCityBet("4564645", "Utrecht", DateLib.DateTime(2018, 9, 3, 0, 0, 0, 0, 0).toUnixTimestamp());
-        addCityBet("3452554", "Groningen", DateLib.DateTime(2018, 9, 3, 0, 0, 0, 0, 0).toUnixTimestamp());
-        addCityBet("2342555", "Maastricht", DateLib.DateTime(2018, 9, 21, 0, 0, 0, 0, 0).toUnixTimestamp());
-        addCityBet("4564654", "Haarlem", DateLib.DateTime(2018, 9, 29, 0, 0, 0, 0, 0).toUnixTimestamp());
-        addCityBet("3655463", "Overschie", DateLib.DateTime(2018, 10, 10, 0, 0, 0, 0, 0).toUnixTimestamp());
-        addCityBet("3454344", "Schiedam", DateLib.DateTime(2018, 11, 11, 0, 0, 0, 0, 0).toUnixTimestamp());
-        addCityBet("3248228", "Spangen", DateLib.DateTime(2018, 11, 12, 0, 0, 0, 0, 0).toUnixTimestamp());
+        // addCityBet(434,"2471883", "Rotterdam", 0, 0, 0, DateLib.DateTime(2018, 8, 13, 0, 0, 0, 0, 0).toUnixTimestamp());
+        // addCityBet("2329929", "Amsterdam", 0, 0, 0, DateLib.DateTime(2018, 8, 15, 0, 0, 0, 0, 0).toUnixTimestamp());
+        // addCityBet("4564645", "Utrecht", 0, 0, 0, DateLib.DateTime(2018, 9, 3, 0, 0, 0, 0, 0).toUnixTimestamp());
+        // addCityBet("3452554", "Groningen", 0, 0, 0,  DateLib.DateTime(2018, 9, 3, 0, 0, 0, 0, 0).toUnixTimestamp());
+        // addCityBet("2342555", "Maastricht",0, 0, 0,  DateLib.DateTime(2018, 9, 21, 0, 0, 0, 0, 0).toUnixTimestamp());
+        // addCityBet("4564654", "Haarlem", 0, 0, 0, DateLib.DateTime(2018, 9, 29, 0, 0, 0, 0, 0).toUnixTimestamp());
+        // addCityBet("3655463", "Overschie",0, 0, 0,  DateLib.DateTime(2018, 10, 10, 0, 0, 0, 0, 0).toUnixTimestamp());
+        // addCityBet("3454344", "Schiedam", 0, 0, 0, DateLib.DateTime(2018, 11, 11, 0, 0, 0, 0, 0).toUnixTimestamp());
+        // addCityBet("3248228", "Spangen", 0, 0, 0, DateLib.DateTime(2018, 11, 12, 0, 0, 0, 0, 0).toUnixTimestamp());
     }
 }
