@@ -13951,12 +13951,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x49fE10E065233b3485131Fd6ee3AE3236df20162",
-      "transactionHash": "0x1caadfa1beb71ace4bf8dca98874b294f77b1c9b63cb2ab635090d401943cb05"
+      "address": "0x17c89C4156d22471CbE0dd881D6Ec8ea5454cb34",
+      "transactionHash": "0x5f4471d10b07d70434d427aacb370017ef131d21eddf62cc0f2ea14c05a2159a"
     }
   },
   "schemaVersion": "3.0.5",
-  "updatedAt": "2019-05-25T19:20:32.877Z",
+  "updatedAt": "2019-05-25T20:46:54.964Z",
   "devdoc": {
     "methods": {
       "addCityBet(address,string,string,uint256,uint256,uint256,uint256)": {
