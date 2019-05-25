@@ -16,7 +16,6 @@ const BetComponent = (props) => {
                 return <div className="statusWrapper" style={{ backgroundColor: '#e74c3c' }}>Invalid</div>
         }
     }
-
     return (
         <div className="betWrapper" onClick={(() => console.log('Hier iets doen jordi', bet.id))}>
             <span><b>{bet.name}</b></span>
@@ -24,7 +23,7 @@ const BetComponent = (props) => {
             <span>Inzet: ${bet.inzet}</span>
             <span>Temperatuur: {bet.guess}°</span>
             <div className="detailButton"><b>></b></div>
-            {((type === 1 || type === 2) && bet.guess === "12") &&
+            {((type === 1 || type === 2) && bet.guess === bet.winning_degree) &&
                 <div className="wonWrapper">
                     <span role="img" aria-labelledby="emoticon">🎊</span><span> You Won! </span><span role="img" aria-labelledby="emoticon">🎉</span>
                 </div>
