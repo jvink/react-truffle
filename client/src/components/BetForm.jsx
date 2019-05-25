@@ -4,7 +4,7 @@ import {placeBet, placeAddress } from "../BetFunctions";
 import "../App.css";
 
 
-class App extends React.Component {
+class App extends Component {
     state = {weather: null};
     inzet = React.createRef();
     guess = React.createRef();
