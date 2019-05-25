@@ -1,13 +1,22 @@
 import React, { Component } from "react";
+
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./utils/getWeb3";
 import getWeather from "./Weather";
 import BetDetails from "./components/betDetails";
 
+import BetForm from "./components/BetForm";
+import BetList from "./components/BetList";
+import { getAllBets } from "./BetFunctions";
 import "./App.css";
 
 class App extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null, weather: null, changeContent: false };
+  state = { loading: true, drizzleState: null, storageValue:0 , stackId:null, oracleReady: false, bets: [], web3: null, accounts: null, contract: null, weather: null, changeContent: false };
+  inzet = React.createRef();
+  city = React.createRef();
+  time = React.createRef();
+
+
   componentDidMount = async () => {
     try {
       // Get network provider and web3 instance.
@@ -27,35 +36,65 @@ class App extends Component {
 
       const changeContent = false;
       this.setState({changeContent})
-      // Set web3, accounts, and contract to the state, and then proceed with an
-      // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.runExample);
-    } catch (error) {
+
+      const { drizzle } = this.props;
+      // subscribe to changes in the store
+      this.unsubscribe = drizzle.store.subscribe( async () => {
+        // every time the store updates, grab the state from drizzle
+        const drizzleState = drizzle.store.getState();
+        //get accounts
+        if (drizzleState.drizzleStatus.initialized) {
+          this.setState({ loading: false, drizzleState}, this.readValue);
+        }
+
+        // Set web3, accounts, and contract to the state, and then proceed with an
+        // example of interacting with the contract's methods.
+        this.setState({ web3, accounts, contract: instance }, this.runExample);
+      }); 
+    }catch (error) {
       // Catch any errors for any of the above operations.
       alert(
         `Failed to load web3, accounts, or contract. Check console for details.`,
       );
       console.error(error);
-    }
+    };
   };
 
-  onChangeCity = async (e) => {
-    let {value} = e.target;
-    const weather = await getWeather(value);
-    this.setState({ weather });
+  componentWillUnmount() {
+    this.unsubscribe();
   }
+  readValue = async () => {
 
-  runExample = async () => {
-    const { accounts, contract } = this.state;
+    /// Hier leest alle weddenschappen...
+    // alle data die veranderbaar is
+    const { drizzle } = this.props;
+    try{
+      const contract = drizzle.contracts.SimpleStorage;
+      const contract2 = drizzle.contracts.WeatherBets;
 
-    // Stores a given value, 5 by default.
-    await contract.methods.set(5).send({ from: accounts[0], gas: 2000000 });
+      await contract2.methods.getOracleAddress().call()
+    .then(address => {
+      if(parseInt(address)!== 0) {
+      console.log(parseInt(address))
+      this.setState({oracleReady: true});
+      }
 
-    // Get the value from the contract to prove it worked.
-    const response = await contract.methods.get().call();
+      return address;}, 
+    () => console.log("first enter oracle address"));
 
-    // Update state with the result.
-    this.setState({ storageValue: response });
+    console.log(this.state.oracleReady)
+    console.log("stap2")
+
+    this.setState({bets: await getAllBets(drizzle)});
+
+    var value = await contract.methods.get().call()
+    console.log(value)
+
+     if(value) this.setState({storageValue: value})
+    }
+    catch{
+      alert("Wait few seconds then restart browser, probably the contracts take time to deploy.")
+    }
   };
 
   initialStateChangeContent = async () => {
@@ -74,10 +113,12 @@ class App extends Component {
   }
 
   render() {
-    if (!this.state.web3) {
-      return <div>Loading Web3, accounts, and contract...</div>;
+    if (this.state.loading) {
+      return <div>Loading Drizzle, Web3, Metamask, en Contracts...</div>;
     }
-
+    
+    const { drizzle } = this.props;
+    const { drizzleState, storageValue, oracleReady, bets } = this.state;
     return (
 
       <div className="container">
@@ -153,11 +194,16 @@ class App extends Component {
                 </p>
               </div>
             </div>
+            <BetForm drizzle={drizzle} drizzleState={drizzleState} oracleReady={oracleReady}/>
+           <div className="col-1">
+       
           </div>
+            <BetList drizzle={drizzle} drizzleState={drizzleState} storageValue={storageValue} bets={bets}/>  
         </div>
+      </div>
       </div>
     );
   }
 }
-
 export default App;
+
