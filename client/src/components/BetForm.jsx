@@ -26,16 +26,14 @@ class App extends Component {
     event.preventDefault()
     const { drizzle, drizzleState } = this.props;
     const weather = await getWeather(this.city.current.value);
-    console.log(weather)
     const betObject = {
       cityId: weather.id,
       name: this.city.current.value,
       inzet: parseInt(this.inzet.current.value),
       guess: parseInt(this.guess.current.value),
-      time: new Date(this.time.current.value).getTime(),
-      timeOfNow: new Date().getTime()
+      time: moment(this.time.current.value).unix(),
+      timeOfNow: moment().unix()
     }
-    console.log(betObject)
     placeBet(drizzle, drizzleState, betObject);
 
   }
@@ -59,7 +57,6 @@ class App extends Component {
     var date = moment().format("YYYY-MM-DD");
     var time = "12:00";
     var calcTimeAndDate = moment(date + ' ' + time).format("YYYY-MM-DD HH:mm");
-    var timeAndDate = moment(calcTimeAndDate).add(2, 'days').format("DD-MM-YYYY HH:mm");
     
     const message = (<div><span className="text-danger"><b>Admin, Insert Oracle Address first. Without Single Quotes</b></span>
       <input className="form-control mt-2 mb-2" placeholder="address" ref={this.address} />
@@ -98,11 +95,11 @@ class App extends Component {
             <div className="form-group">
               <label>Datum</label>
               <select className="form-control" ref={this.time} >
-                <option>{timeAndDate}</option>
-                <option>{moment(calcTimeAndDate).add(3, 'days').format("DD-MM-YYYY HH:mm")}</option>
-                <option>{moment(calcTimeAndDate).add(4, 'days').format("DD-MM-YYYY HH:mm")}</option>
-                <option>{moment(calcTimeAndDate).add(5, 'days').format("DD-MM-YYYY HH:mm")}</option>
-                <option>{moment(calcTimeAndDate).add(6, 'days').format("DD-MM-YYYY HH:mm")}</option>
+                <option value={moment(calcTimeAndDate).add(2, 'days').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(2, 'days').format("DD-MM-YYYY HH:mm")}</option>
+                <option value={moment(calcTimeAndDate).add(3, 'days').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(3, 'days').format("DD-MM-YYYY HH:mm")}</option>
+                <option value={moment(calcTimeAndDate).add(4, 'days').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(4, 'days').format("DD-MM-YYYY HH:mm")}</option>
+                <option value={moment(calcTimeAndDate).add(5, 'days').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(5, 'days').format("DD-MM-YYYY HH:mm")}</option>
+                <option value={moment(calcTimeAndDate).add(6, 'days').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(6, 'days').format("DD-MM-YYYY HH:mm")}</option>
               </select>
             </div>
             {!this.state.addressReceived && message}
@@ -110,11 +107,6 @@ class App extends Component {
               <button type="button" className="btn btn-secondary">Annuleren</button>
               <button type="submit" disabled={!this.props.oracleReady} className="btn btn-primary">Plaats weddenschap</button>
             </div>
-          </div>
-          <div>
-            <h4>Het is nu</h4>
-            {/* <h1>{Math.round(this.state.weather.main.temp)} C°</h1>
-                  <h3>in {this.state.weather.name}</h3> */}
           </div>
         </form>
       </div>
