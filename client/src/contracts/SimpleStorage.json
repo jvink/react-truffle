@@ -11,15 +11,15 @@
         }
       ],
       "name": "HTTPRequest",
-      "type": "event",
-      "signature": "0x9e936044bcfeaf5add073a1edb7c513bd9a94b70e3686d735ca7b26a17fb3dea"
+      "type": "event"
     },
     {
       "constant": false,
       "inputs": [
         {
           "name": "x",
-          "type": "uint256"
+          "type": "uint256",
+          "indexed": false
         }
       ],
       "name": "set",
@@ -27,7 +27,26 @@
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x60fe47b1"
+      "anonymous": false
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "x",
+          "type": "uint256"
+        }
+      ],
+      "name": "get",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "constant": true,
@@ -41,18 +60,18 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function",
-      "signature": "0x6d4ce63c"
+      "type": "function"
     }
   ],
-  "bytecode": "0x608060405234801561001057600080fd5b506101d0806100206000396000f3fe60806040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806360fe47b1146100515780636d4ce63c1461008c575b600080fd5b34801561005d57600080fd5b5061008a6004803603602081101561007457600080fd5b81019080803590602001909291905050506100b7565b005b34801561009857600080fd5b506100a161019b565b6040518082815260200191505060405180910390f35b806000819055507f9e936044bcfeaf5add073a1edb7c513bd9a94b70e3686d735ca7b26a17fb3dea6040518080602001828103825260718152602001807f687474703a2f2f6170692e6f70656e776561746865726d61702e6f72672f646181526020017f74612f322e352f776561746865723f713d446f726472656368742c6e6c26756e81526020017f6974733d6d65747269632641505049443d35356533643036636665323562353481526020017f656333343965616538383062393864353700000000000000000000000000000081525060800191505060405180910390a150565b6000805490509056fea165627a7a72305820e6804c2585076f0c5ee9ec637a86190b5b2c450139a911e72d4c5d130573fe870029",
-  "deployedBytecode": "0x60806040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806360fe47b1146100515780636d4ce63c1461008c575b600080fd5b34801561005d57600080fd5b5061008a6004803603602081101561007457600080fd5b81019080803590602001909291905050506100b7565b005b34801561009857600080fd5b506100a161019b565b6040518082815260200191505060405180910390f35b806000819055507f9e936044bcfeaf5add073a1edb7c513bd9a94b70e3686d735ca7b26a17fb3dea6040518080602001828103825260718152602001807f687474703a2f2f6170692e6f70656e776561746865726d61702e6f72672f646181526020017f74612f322e352f776561746865723f713d446f726472656368742c6e6c26756e81526020017f6974733d6d65747269632641505049443d35356533643036636665323562353481526020017f656333343965616538383062393864353700000000000000000000000000000081525060800191505060405180910390a150565b6000805490509056fea165627a7a72305820e6804c2585076f0c5ee9ec637a86190b5b2c450139a911e72d4c5d130573fe870029",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.0+commit.1d4f565a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"name\":\"x\",\"type\":\"uint256\"}],\"name\":\"set\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"get\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"url\",\"type\":\"string\"}],\"name\":\"HTTPRequest\",\"type\":\"event\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/Nofit/Documents/GitHub/react-truffle/contracts/SimpleStorage.sol\":\"SimpleStorage\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/Nofit/Documents/GitHub/react-truffle/contracts/SimpleStorage.sol\":{\"keccak256\":\"0x7a8cdc2e5c35a33b00da4579ad5749104dd105f7d2b6822201f8e8e1dbaad1ba\",\"urls\":[\"bzzr://80b5840ea985f49fdfef09ea3ca563bf494f4c7c4822a291de1ff6d140b71118\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b506101d0806100206000396000f3fe60806040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806360fe47b1146100515780636d4ce63c1461008c575b600080fd5b34801561005d57600080fd5b5061008a6004803603602081101561007457600080fd5b81019080803590602001909291905050506100b7565b005b34801561009857600080fd5b506100a161019b565b6040518082815260200191505060405180910390f35b806000819055507f9e936044bcfeaf5add073a1edb7c513bd9a94b70e3686d735ca7b26a17fb3dea6040518080602001828103825260718152602001807f687474703a2f2f6170692e6f70656e776561746865726d61702e6f72672f646181526020017f74612f322e352f776561746865723f713d446f726472656368742c6e6c26756e81526020017f6974733d6d65747269632641505049443d35356533643036636665323562353481526020017f656333343965616538383062393864353700000000000000000000000000000081525060800191505060405180910390a150565b6000805490509056fea165627a7a72305820a3b6fabbd5aec0d990d90ba94d8f2d0a3cd770a25f5459b43b7ddaa39ac6ebf60029",
+  "deployedBytecode": "0x60806040526004361061004c576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806360fe47b1146100515780636d4ce63c1461008c575b600080fd5b34801561005d57600080fd5b5061008a6004803603602081101561007457600080fd5b81019080803590602001909291905050506100b7565b005b34801561009857600080fd5b506100a161019b565b6040518082815260200191505060405180910390f35b806000819055507f9e936044bcfeaf5add073a1edb7c513bd9a94b70e3686d735ca7b26a17fb3dea6040518080602001828103825260718152602001807f687474703a2f2f6170692e6f70656e776561746865726d61702e6f72672f646181526020017f74612f322e352f776561746865723f713d446f726472656368742c6e6c26756e81526020017f6974733d6d65747269632641505049443d35356533643036636665323562353481526020017f656333343965616538383062393864353700000000000000000000000000000081525060800191505060405180910390a150565b6000805490509056fea165627a7a72305820a3b6fabbd5aec0d990d90ba94d8f2d0a3cd770a25f5459b43b7ddaa39ac6ebf60029",
   "sourceMap": "27:378:3:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;27:378:3;;;;;;;",
   "deployedSourceMap": "27:378:3:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;77:195;;8:9:-1;5:2;;;30:1;27;20:12;5:2;77:195:3;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;77:195:3;;;;;;;;;;;;;;;;;;;;278:72;;8:9:-1;5:2;;;30:1;27;20:12;5:2;278:72:3;;;;;;;;;;;;;;;;;;;;;;;77:195;125:1;112:10;:14;;;;138:128;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;77:195;:::o;278:72::-;314:4;334:10;;327:17;;278:72;:::o",
   "source": "pragma solidity ^0.5.0;\r\n\r\ncontract SimpleStorage {\r\n  uint storedData;\r\n\r\n  function set(uint x) public {\r\n    storedData = x;\r\n    emit HTTPRequest(\"http://api.openweathermap.org/data/2.5/weather?q=Dordrecht,nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57\");\r\n  }\r\n\r\n  function get() public view returns (uint) {\r\n    return storedData;\r\n  }\r\n\r\n  event HTTPRequest(\r\n        string url\r\n    );\r\n}\r\n",
-  "sourcePath": "C:/FILES/react-truffle/contracts/SimpleStorage.sol",
+  "sourcePath": "C:/Users/Nofit/Documents/GitHub/react-truffle/contracts/SimpleStorage.sol",
   "ast": {
-    "absolutePath": "/C/FILES/react-truffle/contracts/SimpleStorage.sol",
+    "absolutePath": "/C/Users/Nofit/Documents/GitHub/react-truffle/contracts/SimpleStorage.sol",
     "exportedSymbols": {
       "SimpleStorage": [
         217
@@ -259,7 +278,8 @@
                     }
                   },
                   "value": null,
-                  "visibility": "internal"
+                  "visibility": "internal",
+                  "indexed": false
                 }
               ],
               "src": "89:8:3"
@@ -274,7 +294,8 @@
             "src": "77:195:3",
             "stateMutability": "nonpayable",
             "superFunction": null,
-            "visibility": "public"
+            "visibility": "public",
+            "anonymous": false
           },
           {
             "body": {
@@ -294,12 +315,102 @@
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
+                    },
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 199,
+                      "name": "storedData",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 190,
+                      "src": "146:10:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 200,
+                      "name": "x",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 196,
+                      "src": "159:1:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
                     }
                   },
                   "functionReturnParameters": 208,
                   "id": 210,
                   "nodeType": "Return",
                   "src": "327:17:3"
+                },
+                {
+                  "eventCall": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "hexValue": "687474703a2f2f6170692e6f70656e776561746865726d61702e6f72672f646174612f322e352f776561746865723f713d446f726472656368742c6e6c26756e6974733d6d65747269632641505049443d3535653364303663666532356235346563333439656165383830623938643537",
+                        "id": 204,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "184:115:3",
+                        "subdenomination": null,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_e75e83c0e74d049a63bd3c54b9867faf8850213ff211765cc99c02bf75464159",
+                          "typeString": "literal_string \"http://api.openweathermap.org/data/2.5/weather?q=Dordrecht,nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57\""
+                        },
+                        "value": "http://api.openweathermap.org/data/2.5/weather?q=Dordrecht,nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_stringliteral_e75e83c0e74d049a63bd3c54b9867faf8850213ff211765cc99c02bf75464159",
+                          "typeString": "literal_string \"http://api.openweathermap.org/data/2.5/weather?q=Dordrecht,nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57\""
+                        }
+                      ],
+                      "id": 203,
+                      "name": "HTTPRequest",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 220,
+                      "src": "172:11:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (string memory)"
+                      }
+                    },
+                    "id": 205,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "172:128:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 206,
+                  "nodeType": "EmitStatement",
+                  "src": "167:133:3"
                 }
               ]
             },
@@ -313,7 +424,34 @@
             "parameters": {
               "id": 205,
               "nodeType": "ParameterList",
-              "parameters": [],
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 196,
+                  "name": "x",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 208,
+                  "src": "124:6:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 195,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "124:4:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
               "src": "290:2:3"
             },
             "returnParameters": {
@@ -395,7 +533,115 @@
               ],
               "src": "373:28:3"
             },
-            "src": "356:46:3"
+            "src": "356:46:3",
+            "body": {
+              "id": 215,
+              "nodeType": "Block",
+              "src": "354:30:3",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 213,
+                    "name": "storedData",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 190,
+                    "src": "368:10:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 212,
+                  "id": 214,
+                  "nodeType": "Return",
+                  "src": "361:17:3"
+                }
+              ]
+            },
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "returnParameters": {
+              "id": 212,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 211,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 216,
+                  "src": "348:4:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 210,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "348:4:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "347:6:3"
+            },
+            "scope": 221,
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 220,
+            "name": "HTTPRequest",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 219,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 218,
+                  "indexed": false,
+                  "name": "url",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 220,
+                  "src": "418:10:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 217,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "418:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "407:28:3"
+            },
+            "src": "390:46:3"
           }
         ],
         "scope": 218,
@@ -405,7 +651,7 @@
     "src": "0:407:3"
   },
   "legacyAST": {
-    "absolutePath": "/C/FILES/react-truffle/contracts/SimpleStorage.sol",
+    "absolutePath": "/C/Users/Nofit/Documents/GitHub/react-truffle/contracts/SimpleStorage.sol",
     "exportedSymbols": {
       "SimpleStorage": [
         217
@@ -612,7 +858,8 @@
                     }
                   },
                   "value": null,
-                  "visibility": "internal"
+                  "visibility": "internal",
+                  "indexed": false
                 }
               ],
               "src": "89:8:3"
@@ -627,7 +874,8 @@
             "src": "77:195:3",
             "stateMutability": "nonpayable",
             "superFunction": null,
-            "visibility": "public"
+            "visibility": "public",
+            "anonymous": false
           },
           {
             "body": {
@@ -647,12 +895,102 @@
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
+                    },
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "id": 199,
+                      "name": "storedData",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 190,
+                      "src": "146:10:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
+                    },
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 200,
+                      "name": "x",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 196,
+                      "src": "159:1:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_uint256",
+                        "typeString": "uint256"
+                      }
                     }
                   },
                   "functionReturnParameters": 208,
                   "id": 210,
                   "nodeType": "Return",
                   "src": "327:17:3"
+                },
+                {
+                  "eventCall": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "hexValue": "687474703a2f2f6170692e6f70656e776561746865726d61702e6f72672f646174612f322e352f776561746865723f713d446f726472656368742c6e6c26756e6974733d6d65747269632641505049443d3535653364303663666532356235346563333439656165383830623938643537",
+                        "id": 204,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "184:115:3",
+                        "subdenomination": null,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_e75e83c0e74d049a63bd3c54b9867faf8850213ff211765cc99c02bf75464159",
+                          "typeString": "literal_string \"http://api.openweathermap.org/data/2.5/weather?q=Dordrecht,nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57\""
+                        },
+                        "value": "http://api.openweathermap.org/data/2.5/weather?q=Dordrecht,nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_stringliteral_e75e83c0e74d049a63bd3c54b9867faf8850213ff211765cc99c02bf75464159",
+                          "typeString": "literal_string \"http://api.openweathermap.org/data/2.5/weather?q=Dordrecht,nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57\""
+                        }
+                      ],
+                      "id": 203,
+                      "name": "HTTPRequest",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 220,
+                      "src": "172:11:3",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (string memory)"
+                      }
+                    },
+                    "id": 205,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "172:128:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 206,
+                  "nodeType": "EmitStatement",
+                  "src": "167:133:3"
                 }
               ]
             },
@@ -666,7 +1004,34 @@
             "parameters": {
               "id": 205,
               "nodeType": "ParameterList",
-              "parameters": [],
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 196,
+                  "name": "x",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 208,
+                  "src": "124:6:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 195,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "124:4:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
               "src": "290:2:3"
             },
             "returnParameters": {
@@ -748,7 +1113,115 @@
               ],
               "src": "373:28:3"
             },
-            "src": "356:46:3"
+            "src": "356:46:3",
+            "body": {
+              "id": 215,
+              "nodeType": "Block",
+              "src": "354:30:3",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 213,
+                    "name": "storedData",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 190,
+                    "src": "368:10:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "functionReturnParameters": 212,
+                  "id": 214,
+                  "nodeType": "Return",
+                  "src": "361:17:3"
+                }
+              ]
+            },
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "returnParameters": {
+              "id": 212,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 211,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 216,
+                  "src": "348:4:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 210,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "348:4:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "347:6:3"
+            },
+            "scope": 221,
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 220,
+            "name": "HTTPRequest",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 219,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 218,
+                  "indexed": false,
+                  "name": "url",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 220,
+                  "src": "418:10:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 217,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "418:6:3",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "407:28:3"
+            },
+            "src": "390:46:3"
           }
         ],
         "scope": 218,
@@ -765,12 +1238,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x575b930B9eA228b2a4F3b4F9AD8fa6e9381eEFec",
-      "transactionHash": "0x00233710b2609240c726eef4e875821a8f4f8f971934a89c2f2e4236e3fe15a0"
+      "address": "0x72a39BA6708F9AbC8AB378e41b378a4c13c6A06c",
+      "transactionHash": "0xc94a8207c5510f1e9513f39dbacc6b7372019ea900b5642f9334b1c71d723b78"
     }
   },
-  "schemaVersion": "3.0.5",
-  "updatedAt": "2019-05-18T18:56:17.976Z",
+  "schemaVersion": "3.0.9",
+  "updatedAt": "2019-05-25T09:34:15.352Z",
   "devdoc": {
     "methods": {}
   },
