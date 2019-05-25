@@ -1,5 +1,5 @@
 
-
+.json
 .vs
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
@@ -13,6 +13,8 @@
 /client/src/contracts
 /client/package-lock.json
 /client/package.json
+
+/oracle/build/contracts/
 
 # testing
 /coverage
@@ -31,3 +33,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+client/package-lock.json
+client/package.json
