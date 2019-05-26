@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./utils/getWeb3";
 import getWeather from "./Weather";
+import CoinValue from "./CoinValue"
 
 import "./App.css";
 
@@ -115,6 +116,7 @@ class App extends Component {
                 return <li key={i}>{account}</li>
               })}
             </ul>
+            <CoinValue/>
           </div>
         </div>
       </div>
