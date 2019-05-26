@@ -50,25 +50,7 @@ class CoinValue extends Component {
                             </div>
                         </div>
                     ))}
-                </div>
-                // <div >
-                //     {items.map(item => (
-                //         <div className="container">
-                //             <div className="row">
-                //                 <div className="col-1"></div>
-                //                 <div className="card col-3">
-                //                     {item.price_usd}
-                //                 </div>
-                //                 <div className="col-1"></div>
-                //                 <div className="card col-4">
-                //                     {ether} 
-                //                 </div>
-                //             </div>
-                //         </div>
-                //     ))}
-                //     <input type="number" className="form-control" placeholder="dollar" required onChange={this.calculate}/>
-                // </div>
-                
+                </div>                
             );
         }
     }
