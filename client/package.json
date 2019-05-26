@@ -9,6 +9,9 @@
     "react-scripts": "^3.0.1",
 =======
     "react-scripts": "2.1.1",
+<<<<<<< HEAD
+>>>>>>> parent of 821e7d4... Merge branch 'Drizzle-met-weddenschap-functie' into Lijst_lopende_weddenschappen
+=======
 >>>>>>> parent of 821e7d4... Merge branch 'Drizzle-met-weddenschap-functie' into Lijst_lopende_weddenschappen
     "web3": "^1.0.0-beta.55"
   },
