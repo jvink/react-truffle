@@ -33,15 +33,18 @@ class App extends Component {
       const contract = drizzle.contracts.SimpleStorage;
       const contract2 = drizzle.contracts.WeatherBets;
 
+      if(!this.state.oracleReady){
       await contract2.methods.getOracleAddress().call()
     .then(address => {
-      if(parseInt(address)!== 0) {
+      if(parseInt(address)!== 0 && !isNaN(parseInt(address))) {
       console.log(parseInt(address))
       this.setState({oracleReady: true});
       }
 
       return address;}, 
     () => console.log("first enter oracle address"));
+
+      }
 
     console.log(this.state.oracleReady)
     console.log("stap2")

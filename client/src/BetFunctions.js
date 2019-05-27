@@ -60,7 +60,7 @@ export const getAllBets = async (drizzle) => {
         
         }); 
 }
-catch{alert("Lijst met weddenschappen is nog leeg, maak weddenschappen :)")}
+catch{console.log("Tries getting bets, there is none.")}
 
     return listBets;
 
