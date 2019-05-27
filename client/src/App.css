@@ -1,3 +1,20 @@
 .card {
   padding: 1em;
 }
+
+.quotering {
+  border-width: 1px;
+  width: 150px;
+  border-style: solid;
+  text-align: center;
+  font-size: 14px;
+}
+
+.quotering:hover {
+  background-color: grey;
+  cursor: pointer;
+}
+
+.checked {
+  background-color: grey;
+}

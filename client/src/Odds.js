@@ -1,4 +1,4 @@
-const getQuortering = async (forecast, bet, weather, date) => {
+const getOdds = async (forecast, bet, weather, date) => {
     try {
         if (bet === null){
             return 1.00;
@@ -6,7 +6,7 @@ const getQuortering = async (forecast, bet, weather, date) => {
         let difference = null;
         let spanTimeFactor = 1.00;
         let differenceFactor = 1.00;
-        let quoteringFactor = 1.01;
+        let oddFactor = 1.01;
         
         if (forecast > bet) {
             difference = forecast - bet
@@ -20,14 +20,15 @@ const getQuortering = async (forecast, bet, weather, date) => {
                 if (index !== 0) {
                     spanTimeFactor =  index * Math.pow(1.03, index) / index;
                 }
-                console.log(spanTimeFactor);
             }
         }
         if (difference !== 0) {
             differenceFactor = difference * Math.pow(1.1, difference) / difference;
-            return quoteringFactor* differenceFactor * spanTimeFactor ;
+            const diff = oddFactor * differenceFactor * spanTimeFactor
+            return diff.toFixed(2);
         } else {
-            return quoteringFactor * spanTimeFactor;
+            const diff = oddFactor * spanTimeFactor
+            return diff.toFixed(2);
         }
 
     } catch (error) {
@@ -36,4 +37,4 @@ const getQuortering = async (forecast, bet, weather, date) => {
 
 }
 
-export default getQuortering;
+export default getOdds;

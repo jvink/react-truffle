@@ -3,12 +3,14 @@ import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./utils/getWeb3";
 import getWeather from "./Weather";
 import getForeCastWeather from "./ForeCastWeather";
-import getQuotering from "./Quotering"
+import getOdds from "./Odds"
+import getPreviewBets from "./PreviewBet"
+import getPreviewOdds from "./PreviewOdds.js";
 
 import "./App.css";
 
 class App extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null, weather: null, forecastWeather: null, date: null, Quotering: null, bet: null };
+  state = { storageValue: 0, web3: null, accounts: null, contract: null, weather: null, forecastWeather: null, date: null, odds: null, bet: null, previewBets: null, previewOdds: null };
   city = "Rotterdam";
   componentDidMount = async () => {
     try {
@@ -28,10 +30,14 @@ class App extends Component {
       this.setState({ weather });
       this.state.date = weather[0].dt_txt;
       this.state.forecastWeather = await getForeCastWeather(this.state.date, this.city);
-      this.state.Quotering = await getQuotering(Math.round(this.state.forecastWeather), this.state.bet, this.state.weather, this.state.date)
+      this.state.odds = await getOdds(Math.round(this.state.forecastWeather), this.state.bet, this.state.weather, this.state.date)
+      this.state.previewBets = await getPreviewBets(Math.round(this.state.forecastWeather));
+      this.state.previewOdds = await getPreviewOdds(this.state.previewBets, this.state.forecastWeather, this.state.weather, this.state.date);
+      console.log(this.state.previewOdds);
+
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.runExample);
+      this.setState({ web3, accounts, contract: instance });
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -48,8 +54,10 @@ class App extends Component {
     this.setState({ weather });
     const forecastWeather = await getForeCastWeather(this.state.date, this.city);
     this.setState({ forecastWeather });
-    const Quotering = await getQuotering(Math.round(forecastWeather), this.state.bet, weather, this.state.date);
-    this.setState({ Quotering });
+    const odds = await getOdds(Math.round(forecastWeather), this.state.bet, weather, this.state.date);
+    this.setState({ odds });
+    const previewBets =  await getPreviewBets(Math.round(forecastWeather));
+    this.setState({ previewBets });
   }
 
   onChangeDate = async (e) => {
@@ -58,30 +66,21 @@ class App extends Component {
     this.setState({ date })
     const forecastWeather = await getForeCastWeather(date, this.city);
     this.setState({ forecastWeather });
-    const Quotering = await getQuotering(Math.round(forecastWeather), this.state.bet, this.state.weather, date);
-    this.setState({ Quotering });
+    const odds = await getOdds(Math.round(forecastWeather), this.state.bet, this.state.weather, date);
+    this.setState({ odds });
+    const previewBets =  await getPreviewBets(Math.round(forecastWeather));
+    this.setState({ previewBets });
   }
 
   onChangeTemperatuur = async (e) => {
     let {value} = e.target;
     const bet = value;
     this.setState({ bet });
-    const Quotering = await getQuotering(Math.round(this.state.forecastWeather), bet, this.state.weather, this.state.date);
-    this.setState({ Quotering });
+    const odds = await getOdds(Math.round(this.state.forecastWeather), bet, this.state.weather, this.state.date);
+    this.setState({ odds });
+    const previewBets =  await getPreviewBets(Math.round(this.state.forecastWeather));
+    this.setState({ previewBets });
   }
-
-  runExample = async () => {
-    const { accounts, contract } = this.state;
-
-    // Stores a given value, 5 by default.
-    await contract.methods.set(5).send({ from: accounts[0], gas: 2000000 });
-
-    // Get the value from the contract to prove it worked.
-    const response = await contract.methods.get().call();
-
-    // Update state with the result.
-    this.setState({ storageValue: response });
-  };
 
   render() {
     if (!this.state.web3) {
@@ -125,7 +124,25 @@ class App extends Component {
                 </div>
                 <label>Quotering</label>
                 <div className="form-group">
-                  {this.state.Quotering.toFixed(2)}
+                  {this.state.odds.toFixed(2)}
+                </div>
+                <div>
+                  <div className="form-group">
+                    <table>
+                      <tbody>
+                        <tr>
+                          {this.state.previewBets.map((previewBets, index) => {
+                            return <td className="quotering" key ={index}>{previewBets} C°</td>
+                          })}
+                        </tr>
+                          {this.state.previewOdds.map((previewOdds, index) => {
+                            return <td className="quotering" key ={index}>{previewOdds}</td>
+                          })}
+                        <tr>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div style={{ display: 'flex' }}>
                   <button type="button" className="btn btn-secondary">Annuleren</button>
