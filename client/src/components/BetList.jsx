@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "../App.css";
+import "../css/App.css";
 import BetComponent from "./Bet";
 
 
@@ -42,9 +42,9 @@ class App extends Component {
         <h4>Your bets:</h4>
         {bets && bets.map((bet, i) => {
           if (bet.made_on > bet.weather_date) {
-            return <BetComponent bet={bet} key={i} type={0}/>;
+            return <BetComponent bet={bet} key={i} type={0} onClickDetail={(bet) => this.props.onClickDetail(bet)}/>;
           } else {
-            return <BetComponent bet={bet} key={i} type={1}/>;
+            return <BetComponent bet={bet} key={i} type={1} onClickDetail={(bet) => this.props.onClickDetail(bet)}/>;
           }
         }
         )}

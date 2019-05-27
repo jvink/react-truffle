@@ -3,7 +3,7 @@ import getWeather from "../Weather";
 import { placeBet, placeAddress } from "../BetFunctions";
 import moment from 'moment';
 //import betDetails from '../components/betDetails';
-import "../App.css";
+import "../css/App.css";
 
 
 class App extends Component {
@@ -55,6 +55,7 @@ class App extends Component {
   }
 
   onClickChangeContent = async () => {
+    console.log("test")
     this.setState({changeContent : true})
   }
 
@@ -74,14 +75,10 @@ class App extends Component {
     // if it exists, then we display its value
     return (
       <div className="card col-7">
-
-      {/* {this.state.changeContent ? <betDetails changecontent={this.initialStateChangeContent}/> 
-      :  */}
-
         <h2>Weerweddenschappen</h2>
         <form onSubmit={this.handleSubmit}>
-          <div className="col-md-4 mb-3">
-            <label>Inzet (in Dolla) </label>
+          <div className="col-md-5 mb-3">
+            <label>Inzet (in Dollar) </label>
             <div className="input-group mb-2">
               <div className="input-group-prepend">
                 <span className="input-group-text">@</span>
@@ -122,8 +119,6 @@ class App extends Component {
             </div>
           </div>
         </form>
-      
-      
       </div>
     );
   }

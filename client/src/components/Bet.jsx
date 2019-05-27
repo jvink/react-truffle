@@ -1,10 +1,10 @@
 import React from 'react';
-import BetForm from '../components/betDetails';
-import './bet.css';
+import BetForm from './BetDetails';
+import '../css/bet.css';
 
 const BetComponent = (props) => {
-    const { bet, type } = props;
-
+    const { bet, type, changeContent } = props;
+    console.log(props)
     const renderStatus = () => {
         switch (type) {
             case 0:
@@ -19,7 +19,7 @@ const BetComponent = (props) => {
     }
 
     return (
-        <div className="betWrapper" onClick={(() => <BetForm onClickChangeContent/>)}>
+        <div className="betWrapper" onClick={(() => props.onClickDetail(changeContent))}>
             <span><b>{bet.name}</b></span>
             {renderStatus()}
             <span>Inzet: ${bet.inzet}</span>

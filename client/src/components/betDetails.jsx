@@ -1,52 +1,67 @@
-import React from 'react'
+import React from 'react';
+import BetForm from './BetForm';
+import "../css/betDetails.css";
+import moment from 'moment';
 
-class betDetails extends React.Component{
-    constructor(){
-        super()
-        this.state={
-        }
-    }
+const BetDetailsComponent = (props) => {
+    const { changeContent } = props;
+    let inzet = null;
+    let temperatuur = null;
+    let locatie = null;
+    let timestamp = null;
 
-    render(){
+    {props.bets.map((bet, i) => { 
+        inzet = bet.inzet;
+        temperatuur = bet.name;
+        locatie = bet.guess;
+        timestamp = bet.made_on;
+    })}
+
+    let datum = moment.unix(timestamp).format("DD-MM-YYYY HH:mm");
+
+
+
         return(
-            <div>
+            
+            <div className="card col-7">
                 <div className="flex">
                     <h2>Weddenschap details</h2>
-                    <h2 className="XCursor" onClick={() => this.props.changecontent()}><i className="material-icons">clear</i></h2>
+                    <h2 className="XCursor" onClick={(() => props.onClickDetail(changeContent))}><i className="material-icons">clear</i></h2>
                 </div>
-                <div className="col-md-4 mb-3">
-                    <label>Inzet</label>
-                    <div className="input-group">
-                        <div className="input-group-prepend">
-                        <span className="input-group-text">$</span>
-                        </div>
-                        <input type="number" className="form-control" disabled={true} placeholder="9" required />
+                <div className="col-md-5 mb-3">
+                    <label>Inzet (in Dollar) </label>
+                    <div className="input-group mb-2">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">@</span>
+                    </div>
+                    
+                    <input type="number" className="form-control" placeholder={inzet} disabled="true" required />
+                    
+                    </div>
+                    <label>Welke temperatuur wed je?</label>
+                    <div className="input-group mb-2">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">@</span>
+                    </div>
+                    <input type="number" className="form-control" placeholder={temperatuur} disabled="true" required />
                     </div>
                     <div className="form-group">
-                        <label>Locatie</label>
-                        <select className="form-control" disabled={true} onChange={this.onChangeCity}>
-                        <option>Rotterdam</option>
-                        <option>Amsterdam</option>
-                        <option>Breda</option>
-                        <option>Dordrecht</option>
-                        <option>Groningen</option>
-                        </select>
+                    <label>Locatie</label>
+                    <select className="form-control" disabled="true">
+                        <option>{locatie}</option>
+                    </select>
                     </div>
                     <div className="form-group">
-                        <label>Datum</label>
-                        <select className="form-control" disabled={true}>
-                        <option>6-6-2019 12:00</option>
-                        <option>7-6-2019 12:00</option>
-                        <option>8-6-2019 12:00</option>
-                        <option>9-6-2019 12:00</option>
-                        </select>
+                    <label>Datum</label>
+                    <select className="form-control" disabled="true">
+                        <option>{datum}</option>
+                    </select>
                     </div>
-                    <label>Resultaat:</label>
-                    Verloren
                 </div>
             </div>
+          
         )
-    }
+
 }
 
-export default betDetails
+export default BetDetailsComponent
