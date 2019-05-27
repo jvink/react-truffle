@@ -20,9 +20,9 @@ class CoinValue extends Component {
 
     calculate = (e) => {
         const { items } = this.state
-        let test = items.map(i => i.price_usd)
-        let test2 = 1 / parseFloat(test)
-        let bet = e.target.value * test2
+        let ether = items.map(i => i.price_usd)
+        let dollar = 1 / parseFloat(ether)
+        let bet = e.target.value * dollar
 
         this.setState({ether: bet})
     }
