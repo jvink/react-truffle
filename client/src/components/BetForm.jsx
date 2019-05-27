@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import getWeather from "../Weather";
 import { placeBet, placeAddress } from "../BetFunctions";
 import moment from 'moment';
+//import betDetails from '../components/betDetails';
 import "../App.css";
 
 
 class App extends Component {
-  state = { weather: null };
+  state = { weather: null, changeContent : false };
   inzet = React.createRef();
   guess = React.createRef();
   city = React.createRef();
@@ -49,6 +50,14 @@ class App extends Component {
     );
   }
 
+  initialStateChangeContent = async () => {
+    this.setState({changeContent : false})
+  }
+
+  onClickChangeContent = async () => {
+    this.setState({changeContent : true})
+  }
+
   render() {
     if (this.state.loading) {
       return <div>Loading Drizzle, Web3, Metamask...</div>;
@@ -65,6 +74,10 @@ class App extends Component {
     // if it exists, then we display its value
     return (
       <div className="card col-7">
+
+      {/* {this.state.changeContent ? <betDetails changecontent={this.initialStateChangeContent}/> 
+      :  */}
+
         <h2>Weerweddenschappen</h2>
         <form onSubmit={this.handleSubmit}>
           <div className="col-md-4 mb-3">
@@ -109,6 +122,8 @@ class App extends Component {
             </div>
           </div>
         </form>
+      
+      
       </div>
     );
   }

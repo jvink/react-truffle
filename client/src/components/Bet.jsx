@@ -1,4 +1,5 @@
 import React from 'react';
+import BetForm from '../components/betDetails';
 import './bet.css';
 
 const BetComponent = (props) => {
@@ -16,8 +17,9 @@ const BetComponent = (props) => {
                 return <div className="statusWrapper" style={{ backgroundColor: '#e74c3c' }}>Invalid</div>
         }
     }
+
     return (
-        <div className="betWrapper" onClick={(() => console.log('Hier iets doen jordi', bet.id))}>
+        <div className="betWrapper" onClick={(() => <BetForm onClickChangeContent/>)}>
             <span><b>{bet.name}</b></span>
             {renderStatus()}
             <span>Inzet: ${bet.inzet}</span>
