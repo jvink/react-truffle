@@ -39,7 +39,7 @@ class CoinValue extends Component {
                 <>
                     {items.map((i, index) => (
                         <div className="input-group" key={index}>
-                            <input type="number" className="form-control" placeholder="Dollar" required onChange={this.calculate} min="1" style={{width: '100%'}} />
+                            <input type="number" className="form-control" placeholder="Bedrag in dollars" required onChange={this.calculate} min="1" style={{width: '100%'}} />
                         </div>
                     ))}
                 </>

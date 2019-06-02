@@ -6,7 +6,7 @@ import moment from 'moment';
 import { ReactComponent as EtherIcon } from './eth.svg';
 
 class App extends Component {
-  state = { weather: null, inzet: 0 };
+  state = { weather: null, inzet: 0, city: 'Rotterdam' };
   inzet = React.createRef();
   guess = React.createRef();
   city = React.createRef();
@@ -68,23 +68,23 @@ class App extends Component {
         <h2>Weerweddenschappen</h2>
         <form onSubmit={this.handleSubmit}>
           <div>
-            <label>Inzet (in Dollar) </label>
+            <label>Hoeveel wil je inzetten?</label>
             <div>
               <CoinValue onChangeValue={(v) => this.setState({ inzet: v })} />
-              <span style={{ display: 'flex', marginLeft: '.5em' }}>
-                {this.state.inzet}
-                <span style={{marginLeft: '.3em'}}>
+              <span style={{ display: 'flex', margin: '.5em' }}>
+                ≈ <span style={{ marginLeft: '.3em' }}>
                   <EtherIcon />
                 </span>
+                {this.state.inzet}
               </span>
             </div>
             <label>Welke temperatuur wed je?</label>
             <div className="input-group mb-2">
-              <input type="number" className="form-control" placeholder="Guess" ref={this.guess} required />
+              <input type="number" className="form-control" placeholder={`Hoeveel graden wordt het in ${this.state.city}?`} ref={this.guess} required />
             </div>
             <div className="form-group">
               <label>Locatie</label>
-              <select className="form-control" ref={this.city}  >
+              <select className="form-control" ref={this.city} onChange={(e) => this.setState({ city: e.target.value })} >
                 <option>Rotterdam</option>
                 <option>Amsterdam</option>
                 <option>Breda</option>
