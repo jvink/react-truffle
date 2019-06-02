@@ -38,8 +38,8 @@ class CoinValue extends Component {
         else {
             return(
                 <div>
-                    {items.map(item => (
-                        <div>
+                    {items.map((item, i) => (
+                        <div key={i}>
                             <label>Ether</label>
                             <div className="input-group">
                             <div className="input-group-prepend">

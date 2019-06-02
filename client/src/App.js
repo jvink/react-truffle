@@ -37,7 +37,7 @@ class App extends Component {
   };
 
   onChangeCity = async (e) => {
-    let {value} = e.target;
+    let { value } = e.target;
     const weather = await getWeather(value);
     this.setState({ weather });
   }
@@ -67,6 +67,7 @@ class App extends Component {
             <form>
               <div className="col-md-4 mb-3">
                 <label>Ether</label>
+                <CoinValue />
                 <div className="input-group">
                   <div className="input-group-prepend">
                     <span className="input-group-text">@</span>
@@ -116,7 +117,6 @@ class App extends Component {
                 return <li key={i}>{account}</li>
               })}
             </ul>
-            <CoinValue/>
           </div>
         </div>
       </div>
