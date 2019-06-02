@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import BetForm from "./components/BetForm";
 import BetList from "./components/BetList";
 import { getAllBets } from "./BetFunctions";
+
 import "./App.css";
 
 class App extends Component {
