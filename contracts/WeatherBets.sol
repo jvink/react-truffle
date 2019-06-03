@@ -16,12 +16,21 @@ contract WeatherBets is Ownable {
     uint internal minimumBet = 1000000000000;   //  hier moet nog een api voor komen..
 
     struct Bet {
-        address user;
+        address userId;
         bytes32 betId;  // id van de bet
         string city_id; //id van city
+        string name;  // naam van de stad
         uint inzet;  // inzet ether van user
         uint guessing_degree; // temperattur wat  de user raadt
         uint made_on;  // datum wanneer de bet is gemaakt
+        uint weather_date; //
+    }
+
+    struct BetForAPI{
+        address userId;
+        bytes32 betId; //id van de bet
+        string name;  // naam van de stad
+        uint guess;
         uint weather_date; //
     }
   enum BettableOutcome {
@@ -69,12 +78,18 @@ contract WeatherBets is Ownable {
         return weatherOracle.getPendingCityBets();
     }
 
+    function getBetsByUser() public returns (bytes32[] memory) {
+            // mappings
+        bytes32[] storage betIds = userToBets[msg.sender];
+        emit BetEmitted (betIds);
+        return betIds;
+    }
     /// @notice returns the full data of the specified match
     /// @param _betId the id of the desired match
     /// @return match data
     function getCityBet(bytes32 _betId) public view returns (
         address userId,
-        bytes32 betId,//id van de bet
+        bytes32 betId,   //id van de bet
         string memory city_id, //id van city
         string memory name,  // naam van de stad
         uint inzet,
@@ -94,7 +109,7 @@ contract WeatherBets is Ownable {
     /// @return match data
     function getMostRecentCityBet() public view returns (
         address userId,
-        bytes32 betId,//id van de bet
+        bytes32 betId,  //id van de bet
         string memory city_id, //id van city
         string memory name,  // naam van de stad
         uint inzet,
@@ -138,12 +153,28 @@ contract WeatherBets is Ownable {
 
         //add the new bet
         Bet[] storage bets = cityToBets[_betId];
-        bets.push(Bet(msg.sender, _betId, _cityId, msg.value, _guess, _date_of_now, _weather_date))-1;
+        bets.push(Bet(msg.sender, _betId, _cityId, _name, msg.value, _guess, _date_of_now, _weather_date))-1;
 
         //add the mapping
         bytes32[] storage userBets = userToBets[msg.sender];
         userBets.push(_betId);   // deze account doet een bet op deze betId
     }
+    function setDecided(bytes32[] memory _betIds) public payable {
+
+         for (uint i = 0; i < _betIds.length; i++){
+            bytes32 current_id = _betIds[i];
+            weatherOracle.declareOutcome(current_id);
+
+            // BetForAPI memory theCityBet = BetForAPI(
+            //      userId,
+            //      betId,//id van de bet
+            //      name,
+            //      guess,
+            //      weather_date);
+        }
+         emit BetEmitted(_betIds);
+    }
+
      /// @notice for testing; tests that the boxing oracle is callable
     /// @return true if connection successful
     function testOracleConnection() public view returns (bool) {
@@ -152,6 +183,9 @@ contract WeatherBets is Ownable {
     function getOracleOriginAddress() public view returns (address) {
         return weatherOracle.getAddress();
     }
+    event BetEmitted (
+        bytes32[] betId//id van de bet
+    );
 }
 
 

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import BetForm from "./components/BetForm";
 import BetList from "./components/BetList";
-import { getAllBets } from "./BetFunctions";
+import { getBetsByUser } from "./BetFunctions";
 import "./App.css";
 
 class App extends Component {
@@ -37,7 +37,6 @@ class App extends Component {
       await contract2.methods.getOracleAddress().call()
     .then(address => {
       if(parseInt(address)!== 0 && !isNaN(parseInt(address))) {
-      console.log(parseInt(address))
       this.setState({oracleReady: true});
       }
 
@@ -45,16 +44,9 @@ class App extends Component {
     () => console.log("first enter oracle address"));
 
       }
-
-    console.log(this.state.oracleReady)
-    console.log("stap2")
-
-    this.setState({bets: await getAllBets(drizzle)});
-
-    var value = await contract.methods.get().call()
-    console.log(value)
-
-     if(value) this.setState({storageValue: value})
+     this.setState({bets: await getBetsByUser(drizzle)});
+     var value = await contract.methods.get().call()
+      if(value) this.setState({storageValue: value})
     }
     catch{
       alert("Wait few seconds then restart browser, probably the contracts take time to deploy.")

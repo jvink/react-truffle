@@ -66,7 +66,9 @@ contract WeatherOracle is Ownable {
 
     enum BetOutcome {
         Pending,    //day has not come yet to decision
-        Decided     //index of participant who is the winning_degree
+        Decided,
+        Won,
+        Lost     //index of participant who is the winning_degree
     }
 
     /// @notice returns the array index of the CityBet with the given id
@@ -94,7 +96,7 @@ contract WeatherOracle is Ownable {
 
         //hash the crucial info to get a unique id
         bytes32 id = keccak256(abi.encodePacked(_cityName, _weather_date, sender));
-        uint quotering = 11; // test
+        uint quotering = 110; // test
 
         //require that the CityBet be unique (not already added)
         require(!cityBetExists(id), "does exist already");
@@ -109,8 +111,14 @@ contract WeatherOracle is Ownable {
 
     /// @notice sets the outcome of a predefined CityBet, permanently on the blockchain
     /// @param _betId unique id of the CityBet to modify
-    /// @param _outcome outcome of the CityBet
-    function declareOutcome(bytes32 _betId, BetOutcome _outcome, int8 _winning_degree) external onlyOwner {
+    // / @param _outcome outcome of the CityBet
+    function declareOutcome(bytes32 _betId) public returns (
+        address userId,
+        bytes32 betId,//id van de bet
+        string memory name,  // naam van de stad
+        uint guess,
+        uint weather_date //
+    ) {
 
         //require that it exists
         require(cityBetExists(_betId), "does not exist");
@@ -123,11 +131,12 @@ contract WeatherOracle is Ownable {
          //   require(_winning_degree >= 0 && theMatch.participantCount > uint8(_winning_degree), "invalid winning_degree");
 
         //set the outcome
-        theCityBet.outcome = _outcome;
+        theCityBet.outcome = BetOutcome.Decided;
         //set the winning_degree (if there is one)
-        if (_outcome == BetOutcome.Decided)
-            theCityBet.winning_degree = _winning_degree;
-        }
+        //if (_outcome == BetOutcome.Decided) theCityBet.winning_degree = _winning_degree;
+
+         return (theCityBet.userId, theCityBet.betId, theCityBet.name, theCityBet.guess, theCityBet.weather_date);
+    }
 
     /// @notice gets the unique ids of all pending citybets, in reverse chronological order
     /// @return an array of unique CityBet ids
