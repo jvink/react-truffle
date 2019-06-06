@@ -13939,12 +13939,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x56Aa6f2E4C82Ee80266285B64c4a341fed0F2F1c",
-      "transactionHash": "0x50f972153583a99340b165fa0369c9e0144885a872d3296e0783eda96c1798a0"
+      "address": "0x08504ae6A7cF4C52518E7a528F26B1255E40F0b6",
+      "transactionHash": "0x88a56fc60a16d81b23c3486e00cb9a7b52842f5cf40f62b729838384f2782b85"
     }
   },
   "schemaVersion": "3.0.9",
-  "updatedAt": "2019-05-27T17:05:01.921Z",
+  "updatedAt": "2019-06-06T08:45:03.842Z",
   "devdoc": {
     "methods": {
       "addCityBet(address,string,string,uint256,uint256,uint256,uint256)": {

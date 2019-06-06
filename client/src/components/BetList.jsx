@@ -6,6 +6,7 @@ import BetComponent from "./Bet";
 class App extends Component {
   state = { stackId: null, bets: null };
 
+
   componentWillReceiveProps = async (props) => {
     this.setState({ bets: props.bets, drizzle: props.drizzle })
   }
@@ -17,7 +18,6 @@ class App extends Component {
     const stackId = await contract.methods["set"].cacheSend(100, {
       from: drizzleState.accounts[0], gas: 2000000
     });
-    console.log(stackId)
     // save the `stackId` for later reference
     this.setState({ stackId });
   };
@@ -42,9 +42,9 @@ class App extends Component {
         <h4>Your bets:</h4>
         {bets && bets.map((bet, i) => {
           if (bet.made_on > bet.weather_date) {
-            return <BetComponent bet={bet} key={i} type={0} onClickDetail={(bet) => this.props.onClickDetail(bet)}/>;
+            return <BetComponent bet={bet} keyTest={i} type={0} onClickDetail={(bet) => this.props.onClickDetail(bet)} onClickSetBetId={(betId) => this.props.onClickSetBetId(betId)}/>;
           } else {
-            return <BetComponent bet={bet} key={i} type={1} onClickDetail={(bet) => this.props.onClickDetail(bet)}/>;
+            return <BetComponent bet={bet} keyTest={i} type={1} onClickDetail={(bet) => this.props.onClickDetail(bet)} onClickSetBetId={this.props.onClickSetBetId}/>;
           }
         }
         )}

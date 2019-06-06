@@ -2,16 +2,17 @@ import React, { Component } from "react";
 import BetForm from "./components/BetForm";
 import BetList from "./components/BetList";
 import BetDetails from "./components/BetDetails";
+import BetComponent from "./components/Bet";
 import { getAllBets } from "./BetFunctions";
 import "./css/App.css";
 
 class App extends Component {
-  state = { loading: true, drizzleState: null, storageValue: 0, stackId: null, oracleReady: false, bets: [], detail: null, chnageContent: false, };
+  state = { loading: true, drizzleState: null, storageValue: 0, stackId: null, oracleReady: false, bets: [], detail: null, changeContent: false, betId: null};
   inzet = React.createRef();
   city = React.createRef();
   time = React.createRef();
   componentDidMount = async () => {
-    const { drizzle } = this.props;
+    const { drizzle} = this.props;
     // subscribe to changes in the store
     this.unsubscribe = drizzle.store.subscribe(async () => {
       // every time the store updates, grab the state from drizzle
@@ -48,13 +49,9 @@ class App extends Component {
 
       }
 
-      console.log(this.state.oracleReady)
-      console.log("stap2")
-
       this.setState({ bets: await getAllBets(drizzle) });
 
       var value = await contract.methods.get().call()
-      console.log(value)
 
       if (value) this.setState({ storageValue: value })
     }
@@ -62,6 +59,10 @@ class App extends Component {
       alert("Wait few seconds then restart browser, probably the contracts take time to deploy.")
     }
   };
+
+  setBetId = async (betId) => {
+    this.setState({betId: betId});  
+  }
 
   render() {
     if (this.state.loading) {
@@ -73,13 +74,15 @@ class App extends Component {
       <div className="container">
         <div className="row">
           {
-            this.state.changeContent ? <BetDetails bets={bets} onClickDetail={(changeContent) => this.setState({ changeContent: false })}/> 
+            this.state.changeContent ? <BetDetails bets={bets} onClickDetail={(changeContent) => this.setState({ changeContent: false})} betId={this.state.betId}/> 
             : <BetForm drizzle={drizzle} drizzleState={drizzleState} oracleReady={oracleReady} />
+
           }
           <div className="col-1">
 
           </div>
-          <BetList drizzle={drizzle} drizzleState={drizzleState} storageValue={storageValue} bets={bets} onClickDetail={(changeContent) => this.setState({ changeContent: true })} />
+          <BetList drizzle={drizzle} drizzleState={drizzleState} storageValue={storageValue} bets={bets} onClickDetail={(changeContent) => this.setState({ changeContent: true })} 
+          onClickSetBetId={this.setBetId} />
         </div>
       </div>
     );

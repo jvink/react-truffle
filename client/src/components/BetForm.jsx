@@ -50,15 +50,6 @@ class App extends Component {
     );
   }
 
-  initialStateChangeContent = async () => {
-    this.setState({changeContent : false})
-  }
-
-  onClickChangeContent = async () => {
-    console.log("test")
-    this.setState({changeContent : true})
-  }
-
   render() {
     if (this.state.loading) {
       return <div>Loading Drizzle, Web3, Metamask...</div>;
