@@ -4,9 +4,12 @@ import { placeBet, placeAddress } from "../BetFunctions";
 import CoinValue from "../CoinValue";
 import moment from 'moment';
 import { ReactComponent as EtherIcon } from './eth.svg';
+import "../css/App.css";
+
 
 class App extends Component {
-  state = { weather: null, inzet: 0, city: 'Rotterdam' };
+  state = { weather: null, inzet: 0, city: 'Rotterdam', changeContent: false };
+  dollar = React.createRef();
   inzet = React.createRef();
   guess = React.createRef();
   city = React.createRef();
@@ -15,6 +18,11 @@ class App extends Component {
 
   componentWillReceiveProps = (props) => {
     this.setState({ addressReceived: props.oracleReady })
+    console.log("komt ie hier nog langs 2/")
+  }
+  componentDidMount = () => {
+    this.setState({ addressReceived: this.props.oracleReady })
+    console.log("komt ie hier nog langs 2/")
   }
   onChangeCity = async (e) => {
     let { value } = e.target;
@@ -29,7 +37,8 @@ class App extends Component {
     const betObject = {
       cityId: weather.id,
       name: this.city.current.value,
-      inzet: parseInt(this.state.inzet),
+      inzet: this.state.inzet,
+      dollar: parseInt(this.state.dollar),
       guess: parseInt(this.guess.current.value),
       time: moment(this.time.current.value).unix(),
       timeOfNow: moment().unix()
@@ -53,7 +62,7 @@ class App extends Component {
     if (this.state.loading) {
       return <div>Loading Drizzle, Web3, Metamask...</div>;
     }
-
+    console.log(this.state.addressReceived)
     var date = moment().format("YYYY-MM-DD");
     var time = "12:00";
     var calcTimeAndDate = moment(date + ' ' + time).format("YYYY-MM-DD HH:mm");
@@ -70,7 +79,7 @@ class App extends Component {
           <div>
             <label>Hoeveel wil je inzetten?</label>
             <div>
-              <CoinValue onChangeValue={(v) => this.setState({ inzet: v })} />
+              <CoinValue onChangeValue={(v, b) => this.setState({ inzet: v, dollar:b })}/>
               <span style={{ display: 'flex', margin: '.5em' }}>
                 ≈ <span style={{ marginLeft: '.3em' }}>
                   <EtherIcon />
@@ -105,7 +114,7 @@ class App extends Component {
             {!this.state.addressReceived && message}
             <div style={{ display: 'flex' }}>
               <button type="button" className="btn btn-secondary">Annuleren</button>
-              <button type="submit" disabled={!this.props.oracleReady} className="btn btn-primary">Plaats weddenschap</button>
+              <button type="submit" disabled={!this.state.addressReceived} className="btn btn-primary">Plaats weddenschap</button>
             </div>
           </div>
         </form>

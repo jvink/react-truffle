@@ -13,7 +13,7 @@ contract WeatherBets is Ownable {
     OracleInterface internal weatherOracle = OracleInterface(weatherOracleAddr);
 
     //constants
-    uint internal minimumBet = 1000000000000;   //  hier moet nog een api voor komen..
+  //  uint internal minimumBet = 1000000000000;   //  hier moet nog een api voor komen..
 
     struct Bet {
         address user;
@@ -117,7 +117,7 @@ contract WeatherBets is Ownable {
     uint _date_of_now) public payable {
 
         //bet must be above a certain minimum
-        require(msg.value >= minimumBet, "Bet amount must be >= minimum bet");
+     //   require(msg.value >= minimumBet, "Bet amount must be >= minimum bet");
 
         //make sure that weatherBet exists
      //   require(weatherOracle.cityBetExists(_betId), "Specified weatherbet not found");

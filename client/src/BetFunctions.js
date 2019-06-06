@@ -19,12 +19,13 @@ export const placeBet = async (drizzle, drizzleState, bet) => {
   
     const contract = drizzle.contracts.WeatherBets;
     console.log(drizzleState.accounts[0])
-    const wei = parseInt(bet.inzet) * 0.0039 * 1000000000000000000; // omzetting dollaar naar ether naar wei  1 ether =1000000000000000000 wei
-    console.log("stap1")
+    console.log("inzet" + bet.inzet)
+    const wei = bet.inzet * 1000000000000000000; // omzetting dollaar naar ether naar wei  1 ether =1000000000000000000 wei
+    console.log("stap1" + wei)
     // //placeBet(string memory _cityId, string memory _name, uint _guess, uint _weather_date, uint _date_of_now)
-    await contract.methods.placeBet(bet.cityId.toString(), bet.name,parseInt(bet.inzet),
+    await contract.methods.placeBet(bet.cityId.toString(), bet.name,parseInt(bet.dollar),
     parseInt(bet.guess), parseInt(bet.time), parseInt(bet.timeOfNow))  //plaats bet
-    .send({ from: drizzleState.accounts[0], value: wei, gas: 3000000 });
+    .send({ from: drizzleState.accounts[0], value: wei, gas: 2000000 });
     console.log("stap3")
   
 }
