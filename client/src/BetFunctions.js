@@ -1,3 +1,4 @@
+import { getPastWeather } from "./Weather";
 
 const parseDataIntoReadable = (bet) => {
     const betObject = {
@@ -46,7 +47,7 @@ export const placeAddress = async (drizzle, drizzleState, address) => {
     }
 }
 
-export const getAllBets = async (drizzle) => {  
+export const getAllBets = async (drizzle) => {    //Deze is niet meer in gebruik
 
     var listBets = [];
     try{
@@ -60,11 +61,147 @@ export const getAllBets = async (drizzle) => {
         console.log(listBets)
         
         }); 
-}
-catch{console.log("Tries getting bets, there is none.")}
+    }
+        catch{console.log("Tries getting bets, there is none.")}
 
     return listBets;
 
+    }
+
+export const getBetsByUser = async (drizzle) => {  // Deze is nu in gebruik
+
+        var listBets = [];
+        try{
+            const contract = drizzle.contracts.WeatherBets;
+            await contract.methods.getBetsByUser().call()
+            .then( async (betIds) => {
+            betIds.forEach(async (betId) => { const rawBet = await contract.methods.getCityBet(betId).call();
+                const readableBet = parseDataIntoReadable(rawBet);
+                listBets.push(readableBet);
+            });
+            
+            }); 
+        }
+            catch{console.log("Tries getting bets, there is none.")}
+    
+        return listBets;
+    
+}
+
+
+
+export const changeOutcome = async (drizzle, drizzleState, bets) => {
+
+    var listBetIds = [];
+    try {
+  
+        bets.forEach(async(bet) => {
+            const checkExpired = Date.now() /1000 > bet.weather_date;
+            if (checkExpired) {
+                if(parseInt(bet.outcome) !== 1){
+                    listBetIds.push(bet.id);
+                }
+            }       
+        });
+        const contract = drizzle.contracts.WeatherBets;
+        if(listBetIds.length !== 0){
+             await contract.methods.setDecided(listBetIds)
+            .send({ from: drizzleState.accounts[0], gas: 3000000 });
+            checkIfWon(drizzle, contract);
+        }
+        else{
+            alert("Je hebt nog lopende weddenschappen.")
+        }     
+    }
+    catch{
+        console.log("something wrong in check date bets")
+    }
+}
+
+const checkIfWon =(drizzle, contract) =>{
+    console.log(contract.events)
+    try{
+       contract.events.BetEmitted({// Using an array means OR: e.g. 20 or 23
+        fromBlock: 0,
+        toBlock: 'latest'
+    }, (error, event) => { })
+    .on('data', (event) => {
+ // same results as the optional callback above
+        checkIdsForWin(drizzle, event.returnValues[0]);
+    })
+    .on('changed', (event) => {
+        // remove event from local database
+    })
+    .on('error', console.error);
+    }
+    catch{
+      console.log("somethings wrong, no event yet..")
+    } 
+}
+
+  const checkIdsForWin = async (drizzle, betIds) => {
+     var winningBets = [];
+     var losingBets = [];
+    try{
+        const contract = drizzle.contracts.WeatherBets;
+        // const rawBet = await contract.methods.getCityBet(onlyOne).call();
+        //     const readableBet = parseDataIntoReadable(rawBet); console.log(readableBet)
+        //     const weather = getPastWeather(readableBet.name, '2019-06-02');
+        //     // listBets.push(readableBet);
+        //     console.log(weather);
+        
+        console.log(betIds)
+        betIds.forEach(async (betId) => { const rawBet = await contract.methods.getCityBet(betId).call();
+            const readableBet = parseDataIntoReadable(rawBet); console.log(readableBet)
+            const weather = await getPastWeather(readableBet.name, '2019-06-02');
+            // listBets.push(readableBet);
+
+
+            const win = parseInt(weather.forecast.forecastday[0].hour[12].temp_c) === readableBet.guess;
+            if(win){
+                console.log("win, insert here smart contract functie met betaling en outcome change");
+                winningBets.push(betId);  // nog functie komen om naar contract te sturen.
+                alert("Je hebt gewonnen")
+            }
+            else{    
+                console.log("You lost man, no moneys back");    
+                losingBets.push(betId);
+                alert("niks gewonnen helaas")
+            }
+        });
+   
+
+    }
+        catch{console.log("Tries getting bets, there is none.")
+        
+    }
+
+  }
+
+  function formatDate(date) {
+       var month = '' + (date.getMonth() + 1),
+        day = '' + date.getDate(),
+        year = date.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+function formatDateWithHour(date) {
+    var month = '' + (date.getMonth() + 1),
+     day = '' + date.getDate(),
+     year = date.getFullYear(),
+      hour = date.getHours(),
+      min = date.getMinutes();
+
+ if (month.length < 2) month = '0' + month;
+ if (day.length < 2) day = '0' + day;
+ if (hour.length < 2) hour = '0' + hour;
+ if (min.length < 2) min = '0' + min;
+
+ return [year, month, day].join('-') + " " + hour + ":" + min;
 }
 
 

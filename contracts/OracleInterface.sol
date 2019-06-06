@@ -4,7 +4,9 @@ contract OracleInterface {
 
     enum BetOutcome {
         Pending,    //match has not been fought to decision
-        Decided     //index of participant who is the winner
+        Decided,
+        Won,
+        Lost     //index of participant who is the winner
     }
     function getPendingCityBets() public view returns (bytes32[] memory);
 
@@ -44,6 +46,14 @@ contract OracleInterface {
        // WeatherData weather;
         int winning_degree // Welke temperatuur het is geworden
          );
+
+    function declareOutcome(bytes32 _betId) public returns (
+        address userId,
+        bytes32 betId,//id van de bet
+        string memory name,  // naam van de stad
+        uint guess,
+        uint weather_date //
+    );
 
     function testConnection() public pure returns (bool);
 

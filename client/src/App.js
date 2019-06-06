@@ -3,8 +3,9 @@ import BetForm from "./components/BetForm";
 import BetList from "./components/BetList";
 import BetDetails from "./components/BetDetails";
 import BetComponent from "./components/Bet";
-import { getAllBets } from "./BetFunctions";
 import "./css/App.css";
+import { getBetsByUser } from "./BetFunctions";
+import "./App.css";
 
 class App extends Component {
   state = { loading: true, drizzleState: null, storageValue: 0, stackId: null, oracleReady: false, bets: [], detail: null, changeContent: false, betId: null};
@@ -35,26 +36,21 @@ class App extends Component {
       const contract = drizzle.contracts.SimpleStorage;
       const contract2 = drizzle.contracts.WeatherBets;
 console.log("komt ie hier nog langs?")
-      if (!this.state.oracleReady) {
+      if (!this.state.oracleReady) {     
         await contract2.methods.getOracleAddress().call()
           .then(address => {
             if (parseInt(address) !== 0 && !isNaN(parseInt(address))) {
               console.log(parseInt(address))
               this.setState({ oracleReady: true });
             }
-
-          },
-            () => console.log("first enter oracle address"));
-
+          }
+          )
       }
-
-      this.setState({ bets: await getAllBets(drizzle) });
-
-      var value = await contract.methods.get().call()
-
-      if (value) this.setState({ storageValue: value })
-    }
-    catch{
+     this.setState({bets: await getBetsByUser(drizzle)});
+     var value = await contract.methods.get().call()
+      if(value) this.setState({storageValue: value})
+          }
+      catch{
       alert("Wait few seconds then restart browser, probably the contracts take time to deploy.")
     }
   };

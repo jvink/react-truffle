@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import getWeather from "../Weather";
+import {getWeather} from "../Weather";
 import { placeBet, placeAddress } from "../BetFunctions";
 import CoinValue from "../CoinValue";
 import moment from 'moment';

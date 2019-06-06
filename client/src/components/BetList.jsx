@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import "../css/App.css";
 import BetComponent from "./Bet";
-
-
+import { changeOutcome } from "../BetFunctions";
 class App extends Component {
   state = { stackId: null, bets: null };
 
 
   componentWillReceiveProps = async (props) => {
-    this.setState({ bets: props.bets, drizzle: props.drizzle })
+    this.setState({ bets: await props.bets}) 
   }
+
 
   setValue = async () => {
     const { drizzle, drizzleState } = this.props;
@@ -22,13 +22,25 @@ class App extends Component {
     this.setState({ stackId });
   };
 
+  checkWin = async () => {
+    const { drizzle, drizzleState } = this.props;
+    
+        const checkDate = async () => {
+      changeOutcome(drizzle, drizzleState, this.state.bets);
+      }
+  
+      if(this.state.bets){
+          checkDate();
+      }  
+    }
+
   render() {
     if (this.state.loading) {
       return <div>Loading Drizzle, Web3, Metamask...</div>;
     }
-
-    const { drizzleState, storageValue } = this.props;
+    const { drizzleState, storageValue, drizzle } = this.props;
     const { bets } = this.state;
+
     // if it exists, then we display its value
     return (
       <div className="card col-4">
@@ -41,13 +53,15 @@ class App extends Component {
         <button type="button" onClick={this.setValue} className="btn btn-secondary mb-4">click here</button>
         <h4>Your bets:</h4>
         {bets && bets.map((bet, i) => {
-          if (bet.made_on > bet.weather_date) {
-            return <BetComponent bet={bet} keyTest={i} type={0} onClickDetail={(bet) => this.props.onClickDetail(bet)} onClickSetBetId={(betId) => this.props.onClickSetBetId(betId)}/>;
+           if (parseInt(bet.outcome) === 1)  {
+            return <BetComponent bet={bet} keyTest={i} type={1} onClickDetail={(bet) => this.props.onClickDetail(bet)} onClickSetBetId={(betId) => this.props.onClickSetBetId(betId)}/>;
           } else {
-            return <BetComponent bet={bet} keyTest={i} type={1} onClickDetail={(bet) => this.props.onClickDetail(bet)} onClickSetBetId={this.props.onClickSetBetId}/>;
-          }
+            return <BetComponent bet={bet} keyTest={i} type={0} onClickDetail={(bet) => this.props.onClickDetail(bet)} onClickSetBetId={this.props.onClickSetBetId}/>;
+            }
+          })
         }
-        )}
+          <button type="button" disabled={bets&&bets.length===0} onClick={this.checkWin} className="btn btn-success mb-4">Kijk of gewonnen</button>
+
       </div>
     );
   }
