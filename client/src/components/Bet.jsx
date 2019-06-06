@@ -15,13 +15,13 @@ import '../css/bet.css';
     const renderStatus = () => {
         switch (type) {
             case 0:
-                return <div className="statusWrapper" style={{ backgroundColor: '#F79F1F' }}>Pending</div>
+                return <div className="statusWrapper" data-testid="status" style={{ backgroundColor: '#F79F1F' }}>Pending</div>
             case 1:
-                return <div className="statusWrapper" style={{ backgroundColor: '#009432' }}>Closed</div>
+                return <div className="statusWrapper" data-testid="status" style={{ backgroundColor: '#009432' }}>Closed</div>
             case 2:
-                return <div className="statusWrapper" style={{ backgroundColor: '#2980b9' }}>Payed</div>
+                return <div className="statusWrapper" data-testid="status" style={{ backgroundColor: '#2980b9' }}>Payed</div>
             default:
-                return <div className="statusWrapper" style={{ backgroundColor: '#e74c3c' }}>Invalid</div>
+                return <div className="statusWrapper" data-testid="status" style={{ backgroundColor: '#e74c3c' }}>Invalid</div>
         }
     }
 

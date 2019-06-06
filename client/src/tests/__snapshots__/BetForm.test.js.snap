@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders 1`] = `
+<DocumentFragment>
+  <div
+    class="card col-7"
+  >
+    <h2>
+      Weerweddenschappen
+    </h2>
+    <form>
+      <div>
+        <label>
+          Hoeveel wil je inzetten?
+        </label>
+        <div>
+          <div>
+            loading...
+          </div>
+          <span
+            style="display: flex; margin: .5em;"
+          >
+            ≈ 
+            <span
+              style="margin-left: .3em;"
+            >
+              <svg>
+                eth.svg
+              </svg>
+            </span>
+            0
+          </span>
+        </div>
+        <label>
+          Welke temperatuur wed je?
+        </label>
+        <div
+          class="input-group mb-2"
+        >
+          <input
+            class="form-control"
+            placeholder="Hoeveel graden wordt het in Rotterdam?"
+            required=""
+            type="number"
+          />
+        </div>
+        <div
+          class="form-group"
+        >
+          <label>
+            Locatie
+          </label>
+          <select
+            class="form-control"
+          >
+            <option>
+              Rotterdam
+            </option>
+            <option>
+              Amsterdam
+            </option>
+            <option>
+              Breda
+            </option>
+            <option>
+              Dordrecht
+            </option>
+            <option>
+              Groningen
+            </option>
+          </select>
+        </div>
+        <div
+          class="form-group"
+        >
+          <label>
+            Datum
+          </label>
+          <select
+            class="form-control"
+          >
+            <option
+              value="2019-06-08 12:00"
+            >
+              08-06-2019 12:00
+            </option>
+            <option
+              value="2019-06-09 12:00"
+            >
+              09-06-2019 12:00
+            </option>
+            <option
+              value="2019-06-10 12:00"
+            >
+              10-06-2019 12:00
+            </option>
+            <option
+              value="2019-06-11 12:00"
+            >
+              11-06-2019 12:00
+            </option>
+            <option
+              value="2019-06-12 12:00"
+            >
+              12-06-2019 12:00
+            </option>
+          </select>
+        </div>
+        <div>
+          <span
+            class="text-danger"
+          >
+            <b>
+              Admin, Insert Oracle Address first. Without Single Quotes
+            </b>
+          </span>
+          <input
+            class="form-control mt-2 mb-2"
+            placeholder="address"
+          />
+          <button
+            class="btn btn-warning mb-3"
+            type="button"
+          >
+            Insert Oracle Address from console here above
+          </button>
+        </div>
+        <div
+          style="display: flex;"
+        >
+          <button
+            class="btn btn-secondary"
+            type="button"
+          >
+            Annuleren
+          </button>
+          <button
+            class="btn btn-primary"
+            disabled=""
+            type="submit"
+          >
+            Plaats weddenschap
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</DocumentFragment>
+`;

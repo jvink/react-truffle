@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders 1`] = `
+<DocumentFragment>
+  <div
+    class="betWrapper"
+  >
+    <span>
+      <b>
+        Rotterdam
+      </b>
+    </span>
+    <div
+      class="statusWrapper"
+      data-testid="status"
+      style="background-color: rgb(0, 148, 50);"
+    >
+      Closed
+    </div>
+    <span>
+      Inzet: $12
+    </span>
+    <span>
+      Temperatuur: 22°
+    </span>
+    <div
+      class="detailButton"
+    >
+      <b>
+        &gt;
+      </b>
+    </div>
+  </div>
+</DocumentFragment>
+`;
