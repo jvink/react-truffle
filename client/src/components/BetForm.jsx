@@ -3,8 +3,9 @@ import getWeather from "../Weather";
 import { placeBet, placeAddress } from "../BetFunctions";
 import CoinValue from "../CoinValue";
 import moment from 'moment';
-import "../css/App.css";
 import { ReactComponent as EtherIcon } from './eth.svg';
+import "../css/App.css";
+
 
 class App extends Component {
   state = { weather: null, inzet: 0, city: 'Rotterdam', changeContent: false };
@@ -72,7 +73,7 @@ class App extends Component {
           <div>
             <label>Hoeveel wil je inzetten?</label>
             <div>
-              <CoinValue onChangeValue={(v) => this.setState({ inzet: v })} />
+              <CoinValue onChangeValue={(v) => this.setState({ inzet: v })}/>
               <span style={{ display: 'flex', margin: '.5em' }}>
                 ≈ <span style={{ marginLeft: '.3em' }}>
                   <EtherIcon />
