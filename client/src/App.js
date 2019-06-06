@@ -34,7 +34,7 @@ class App extends Component {
     try {
       const contract = drizzle.contracts.SimpleStorage;
       const contract2 = drizzle.contracts.WeatherBets;
-
+console.log("komt ie hier nog langs?")
       if (!this.state.oracleReady) {
         await contract2.methods.getOracleAddress().call()
           .then(address => {
@@ -43,7 +43,6 @@ class App extends Component {
               this.setState({ oracleReady: true });
             }
 
-            return address;
           },
             () => console.log("first enter oracle address"));
 
@@ -70,6 +69,7 @@ class App extends Component {
     }
     const { drizzle } = this.props;
     const { drizzleState, storageValue, oracleReady, bets } = this.state;
+    console.log(this.state.oracleReady)
     return (
       <div className="container">
         <div className="row">

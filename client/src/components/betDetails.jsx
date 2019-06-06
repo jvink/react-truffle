@@ -33,7 +33,7 @@ const BetDetailsComponent = (props) => {
         </div>
         <form>
           <div>
-            <label>Hoeveel wil je inzetten?</label>
+            <label>Inzet</label>
             <div>
               {/* <CoinValue ethereumInzet={inzet}/>
               <span style={{ display: 'flex', margin: '.5em' }}>
@@ -44,7 +44,7 @@ const BetDetailsComponent = (props) => {
               </span> */}
               <input type="number" className="form-control" placeholder={inzet} disabled={true}/>
             </div>
-            <label>Welke temperatuur wed je?</label>
+            <label>Gewedde temperatuur</label>
             <div className="input-group mb-2">
               <input type="number" className="form-control" placeholder={temperatuur} value={temperatuur} disabled={true} required />
             </div>

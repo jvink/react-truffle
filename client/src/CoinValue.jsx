@@ -23,7 +23,7 @@ class CoinValue extends Component {
         let dollar = 1 / parseFloat(ether)
         let bet = e.target.value * dollar
 
-        this.props.onChangeValue(bet);
+        this.props.onChangeValue(bet, e.target.value);
     }
 
     render() {
