@@ -35,3 +35,10 @@ yarn-error.log*
 
 client/package-lock.json
 client/package.json
+oracle/build/contracts/DateLib.json
+oracle/build/contracts/Migrations.json
+oracle/build/contracts/Ownable.json
+oracle/build/contracts/WeatherOracle.json
+client/package-lock.json
+client/src/contracts/Migrations.json
+client/src/contracts/SimpleStorage.json

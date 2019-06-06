@@ -1,9 +1,17 @@
 import React from 'react';
-import './bet.css';
+import BetForm from './BetDetails';
+import App from '../App'
+import '../css/bet.css';
+import BetDetailsComponent from './BetDetails';
 
-const BetComponent = (props) => {
-    const { bet, type } = props;
+ const BetComponent = (props) => {
+    const { bet, type, changeContent} = props;
 
+    const onClickCallTwoFunctions = () => {
+        props.onClickDetail(props.changeContent);
+        props.onClickSetBetId(bet.id);
+    }
+    
     const renderStatus = () => {
         switch (type) {
             case 0:
@@ -16,8 +24,9 @@ const BetComponent = (props) => {
                 return <div className="statusWrapper" style={{ backgroundColor: '#e74c3c' }}>Invalid</div>
         }
     }
+
     return (
-        <div className="betWrapper" onClick={(() => console.log('Hier iets doen jordi', bet.id))}>
+    <div className="betWrapper" onClick={onClickCallTwoFunctions}>
             <span><b>{bet.name}</b></span>
             {renderStatus()}
             <span>Inzet: ${bet.inzet}</span>
