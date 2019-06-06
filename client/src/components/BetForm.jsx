@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import getWeather from "../Weather";
 import { placeBet, placeAddress } from "../BetFunctions";
+import CoinValue from "../CoinValue";
 import moment from 'moment';
-//import betDetails from '../components/betDetails';
 import "../css/App.css";
-
+import { ReactComponent as EtherIcon } from './eth.svg';
 
 class App extends Component {
-  state = { weather: null, changeContent : false };
+  state = { weather: null, inzet: 0, city: 'Rotterdam', changeContent: false };
+
   inzet = React.createRef();
   guess = React.createRef();
   city = React.createRef();
@@ -30,7 +31,7 @@ class App extends Component {
     const betObject = {
       cityId: weather.id,
       name: this.city.current.value,
-      inzet: parseInt(this.inzet.current.value),
+      inzet: parseInt(this.state.inzet),
       guess: parseInt(this.guess.current.value),
       time: moment(this.time.current.value).unix(),
       timeOfNow: moment().unix()
@@ -58,7 +59,7 @@ class App extends Component {
     var date = moment().format("YYYY-MM-DD");
     var time = "12:00";
     var calcTimeAndDate = moment(date + ' ' + time).format("YYYY-MM-DD HH:mm");
-    
+
     const message = (<div><span className="text-danger"><b>Admin, Insert Oracle Address first. Without Single Quotes</b></span>
       <input className="form-control mt-2 mb-2" placeholder="address" ref={this.address} />
       <button type="button" onClick={this.setAddress} className="btn btn-warning mb-3">Insert Oracle Address from console here above</button></div>);
@@ -68,24 +69,24 @@ class App extends Component {
       <div className="card col-7">
         <h2>Weerweddenschappen</h2>
         <form onSubmit={this.handleSubmit}>
-          <div className="col-md-5 mb-3">
-            <label>Inzet (in Dollar) </label>
-            <div className="input-group mb-2">
-              <div className="input-group-prepend">
-                <span className="input-group-text">@</span>
-              </div>
-              <input type="number" className="form-control" placeholder="Dollar" ref={this.inzet} required />
+          <div>
+            <label>Hoeveel wil je inzetten?</label>
+            <div>
+              <CoinValue onChangeValue={(v) => this.setState({ inzet: v })} />
+              <span style={{ display: 'flex', margin: '.5em' }}>
+                ≈ <span style={{ marginLeft: '.3em' }}>
+                  <EtherIcon />
+                </span>
+                {this.state.inzet}
+              </span>
             </div>
             <label>Welke temperatuur wed je?</label>
             <div className="input-group mb-2">
-              <div className="input-group-prepend">
-                <span className="input-group-text">@</span>
-              </div>
-              <input type="number" className="form-control" placeholder="Guess" ref={this.guess} required />
+              <input type="number" className="form-control" placeholder={`Hoeveel graden wordt het in ${this.state.city}?`} ref={this.guess} required />
             </div>
             <div className="form-group">
               <label>Locatie</label>
-              <select className="form-control" ref={this.city}  >
+              <select className="form-control" ref={this.city} onChange={(e) => this.setState({ city: e.target.value })} >
                 <option>Rotterdam</option>
                 <option>Amsterdam</option>
                 <option>Breda</option>
