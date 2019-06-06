@@ -69,7 +69,7 @@ export const getAllBets = async (drizzle) => {    //Deze is niet meer in gebruik
     }
 
 export const getBetsByUser = async (drizzle) => {  // Deze is nu in gebruik
-
+        console.log("komt ie hier?")
         var listBets = [];
         try{
             const contract = drizzle.contracts.WeatherBets;

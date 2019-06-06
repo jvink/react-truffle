@@ -5,7 +5,7 @@ import moment from 'moment';
 import { ReactComponent as EtherIcon } from './eth.svg';
 import CoinValue from "../CoinValue";
 
-const BetDetailsComponent = (props) => {
+const App = (props) => {
     const { changeContent, keyTest } = props;
     let inzet = null;
     let temperatuur = null;
@@ -66,4 +66,4 @@ const BetDetailsComponent = (props) => {
     )
 }
 
-export default BetDetailsComponent
+export default App;

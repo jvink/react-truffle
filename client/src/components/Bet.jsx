@@ -2,7 +2,7 @@ import React from 'react';
 import BetForm from './BetForm';
 import App from '../App'
 import '../css/bet.css';
-import BetDetailsComponent from './BetDetails';
+
 
  const BetComponent = (props) => {
     const { bet, type, changeContent} = props;

@@ -2,10 +2,9 @@ import React, { Component } from "react";
 import BetForm from "./components/BetForm";
 import BetList from "./components/BetList";
 import BetDetails from "./components/BetDetails";
-import BetComponent from "./components/Bet";
 import "./css/App.css";
 import { getBetsByUser } from "./BetFunctions";
-import "./App.css";
+
 
 class App extends Component {
   state = { loading: true, drizzleState: null, storageValue: 0, stackId: null, oracleReady: false, bets: [], detail: null, changeContent: false, betId: null};

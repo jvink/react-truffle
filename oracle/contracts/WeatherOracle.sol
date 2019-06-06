@@ -1,8 +1,7 @@
 pragma solidity ^0.5.0;
-
+import "./oraclizeAPI.sol";
 import "./Ownable.sol";
 import "./DateLib.sol";
-
 /*
 TEST:
 - testConnection
@@ -36,12 +35,20 @@ TEST:
 // http://api.openweathermap.org/data/2.5/weather?q=Rotterdam,nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57
 // voor huidige weer van een bepaalde stad, in dit geval voor Rotterdam
 
-contract WeatherOracle is Ownable {
+contract WeatherOracle is Ownable && usingOraclize {
   mapping(bytes32 => uint) cityIdToIndex;
     CityBet[] citybets;
 
      using DateLib for DateLib.DateTime;
 
+    string public ETHUSD;
+    event LogConstructorInitiated(string nextStep);
+    event LogUpdated(string price);
+    event LogNewOraclizeQuery(string description);
+
+    constructor () public payable {
+       emit LogConstructorInitiated("Constructor was initiated. Call 'updatePrice()' to send the Oraclize Query.");
+   }
     //defines a CityBet along with its outcome
     struct CityBet {
         address userId;
@@ -70,6 +77,11 @@ contract WeatherOracle is Ownable {
         Won,
         Lost     //index of participant who is the winning_degree
     }
+     function __callback(bytes32 myid, string result) public {
+       if (msg.sender != oraclize_cbAddress()) revert("revert oracle");
+       ETHUSD = result;
+       emit LogUpdated(result);
+   }
 
     /// @notice returns the array index of the CityBet with the given id
     /// @dev if the CityBet id is invalid, then the return value will be incorrect and may cause error; you must call cityBetExists(_betId) first!

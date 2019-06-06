@@ -753,12 +753,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xeFB0C5c842F034fB3A0876A51fCfB96cd2BEb6f1",
-      "transactionHash": "0x3a0c985fac931ee7f7a83c7583c18fb7d57ad7054c183a18c9ffc40598e73f33"
+      "address": "0x6259A98668902207B666495e9E13a78074fa97c9",
+      "transactionHash": "0xf67eb82c53793862275ed302f7409c11e136566a75c14e8c281e3724815eb062"
     }
   },
   "schemaVersion": "3.0.9",
-  "updatedAt": "2019-06-06T17:20:51.230Z",
+  "updatedAt": "2019-06-06T18:09:58.925Z",
   "devdoc": {
     "methods": {}
   },

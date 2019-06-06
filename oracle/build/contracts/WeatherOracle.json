@@ -14202,12 +14202,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xeD3681C409DEE2861670851258834525E9E745B9",
-      "transactionHash": "0xfd317ba8f8a222a206229c60d0d38a2607cfd8411d0e0772075fff46e5c1ab42"
+      "address": "0xEB1a01265A89de1123c699382b12D1970859586e",
+      "transactionHash": "0x1eb56b7be1430289c2de683f38a18b09ca734009f32a1abc50571b84928c388e"
     }
   },
   "schemaVersion": "3.0.9",
-  "updatedAt": "2019-06-06T16:43:23.354Z",
+  "updatedAt": "2019-06-06T18:10:02.362Z",
   "devdoc": {
     "methods": {
       "addCityBet(address,string,string,uint256,uint256,uint256,uint256)": {
