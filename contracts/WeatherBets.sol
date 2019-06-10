@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.4.24;
 
 import "./OracleInterface.sol";
 import "./Ownable.sol";
@@ -54,7 +54,7 @@ contract WeatherBets is Ownable {
 
     /// @notice determines whether or not the user has already bet on the given match
     /// @param _user address of a user
-    /// @param _betId betId of a match
+   
     /// @param _guess the index of the participant to bet on (to win)
     /// @return true if the given user has already placed a bet on the given match
 
@@ -64,7 +64,7 @@ contract WeatherBets is Ownable {
 //     }
 
     /// @notice determines whether or not bets may still be accepted for the given match
-    /// @param _betId betId of a match
+  
     /// @return true if the match is bettable
 
     // function _matchOpenForBetting(bytes32 _betId) private view returns (bool) {
@@ -126,7 +126,7 @@ contract WeatherBets is Ownable {
     }
 
     /// @notice places a non-rescindable bet on the given match
-    /// @param _betId the betId of the match on which to bet
+ 
     /// @param _guess the index of the participant chosen as winning_degree
     function placeBet(string memory _cityId, string memory _name, uint inzet, uint _guess, uint _weather_date,
     uint _date_of_now) public payable {

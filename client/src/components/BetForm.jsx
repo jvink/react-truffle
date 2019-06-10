@@ -64,13 +64,14 @@ class App extends Component {
     }
     console.log(this.state.addressReceived)
     var date = moment().format("YYYY-MM-DD");
-    var time = "12:00";
+    var time = "00:00";
     var calcTimeAndDate = moment(date + ' ' + time).format("YYYY-MM-DD HH:mm");
 
     const message = (<div><span className="text-danger"><b>Admin, Insert Oracle Address first. Without Single Quotes</b></span>
       <input className="form-control mt-2 mb-2" placeholder="address" ref={this.address} />
       <button type="button" onClick={this.setAddress} className="btn btn-warning mb-3">Insert Oracle Address from console here above</button></div>);
-
+      const hours = [0, 3, 6, 9, 12, 15, 18, 21];
+      const days = [2,3,4,5,6];
     // if it exists, then we display its value
     return (
       <div className="card col-7">
@@ -104,11 +105,14 @@ class App extends Component {
             <div className="form-group">
               <label>Datum</label>
               <select className="form-control" ref={this.time} >
-                <option value={moment(calcTimeAndDate).add(2, 'days').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(2, 'days').format("DD-MM-YYYY HH:mm")}</option>
-                <option value={moment(calcTimeAndDate).add(3, 'days').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(3, 'days').format("DD-MM-YYYY HH:mm")}</option>
-                <option value={moment(calcTimeAndDate).add(4, 'days').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(4, 'days').format("DD-MM-YYYY HH:mm")}</option>
-                <option value={moment(calcTimeAndDate).add(5, 'days').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(5, 'days').format("DD-MM-YYYY HH:mm")}</option>
-                <option value={moment(calcTimeAndDate).add(6, 'days').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(6, 'days').format("DD-MM-YYYY HH:mm")}</option>
+              {days.map( (x) => {
+                return hours.map(y => {
+                  return <option value={moment(calcTimeAndDate).add(x, 'days').add(y, 'hours').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(x, 'days').add(y, 'hours').format("DD-MM-YYYY HH:mm")}</option>
+                }
+                )
+              })
+            }
+      
               </select>
             </div>
             {!this.state.addressReceived && message}

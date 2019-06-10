@@ -47,6 +47,8 @@ console.log("komt ie hier nog langs?")
           }
           )
       }
+
+      
      this.setState({bets: await getBetsByUser(drizzle)});
      var value = await contract.methods.get().call()
       if(value) this.setState({storageValue: value})

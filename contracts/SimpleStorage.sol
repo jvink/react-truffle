@@ -1,11 +1,10 @@
-pragma solidity ^0.5.0;
-
+pragma solidity ^0.4.24;
 contract SimpleStorage {
   uint storedData;
 
   function set(uint x) public {
     storedData = x;
-    emit HTTPRequest(storedData);
+     HTTPRequest(storedData);
   }
 
   function get() public view returns (uint) {
