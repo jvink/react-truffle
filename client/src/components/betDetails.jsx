@@ -11,6 +11,7 @@ const App = (props) => {
     let temperatuur = null;
     let locatie = null;
     let timestamp = null;
+    let weather_date = null;
     let ethereumInzet = null;
 
     {props.bets.map((bet => bet.id == props.betId ? 
@@ -18,11 +19,12 @@ const App = (props) => {
             inzet= bet.inzet,
             temperatuur= bet.guess, 
             locatie= bet.name,
-            timestamp= bet.made_on
+            timestamp= bet.made_on,
+            weather_date = bet.weather_date
          ) :
         console.log("error")))}
         
-    let datum = moment.unix(timestamp).format("DD-MM-YYYY HH:mm");
+    //let datum = moment.unix(timestamp).format("DD-MM-YYYY HH:mm");
 
     return(
         
@@ -34,7 +36,7 @@ const App = (props) => {
         <form>
           <div>
             <label>Inzet</label>
-            <div>
+            <div className="input-group mb-2">
               {/* <CoinValue ethereumInzet={inzet}/>
               <span style={{ display: 'flex', margin: '.5em' }}>
                 ≈ <span style={{ marginLeft: '.3em' }}>
@@ -42,23 +44,29 @@ const App = (props) => {
                 </span>
                 {ethereumInzet}
               </span> */}
-              <input type="number" className="form-control" placeholder={inzet} disabled={true}/>
+              <input type="number" className="form-control" placeholder={inzet}  value={inzet} disabled={true}/>
             </div>
             <label>Gewedde temperatuur</label>
             <div className="input-group mb-2">
-              <input type="number" className="form-control" placeholder={temperatuur} value={temperatuur} disabled={true} required />
+              <input type="number" className="form-control" placeholder={temperatuur} value={temperatuur} disabled={true}  />
             </div>
+            <label>Gekozen stad</label>
             <div className="form-group">
-              <label>Locatie</label>
+              
               <select className="form-control" disabled={true}>
                 <option selected={true}>{locatie}</option>
               </select>
             </div>
+            <label>Weddenschap gemaakt op:</label>
             <div className="form-group">
-              <label>Datum</label>
+             
               <select className="form-control" disabled={true}>
-                <option selected={true}>{datum}</option>
+                <option selected={true}>{timestamp}</option>
               </select>
+            </div>
+            <label>Deze Weddenschap verloopt op:</label>
+            <div className="input-group">
+              <input  className="form-control" placeholder={weather_date} value={weather_date} disabled={true}  />
             </div>
           </div>
         </form>

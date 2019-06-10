@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {getWeather} from "../Weather";
+import {getWeather, getWeather2} from "../Weather";
 import { placeBet, placeAddress } from "../BetFunctions";
 import CoinValue from "../CoinValue";
 import moment from 'moment';
@@ -12,7 +12,7 @@ import getPreviewOdds from "../PreviewOdds.js";
 
 
 class App extends Component {
-  state = { weather: null, inzet: 0, city: 'Rotterdam', changeContent: false,
+  state = { weather: null, inzet: 0, city: 'Rotterdam', changeContent: false, dollar: 0,
   forecastWeather: null, date: null, odds: null, previewBets: null, previewOdds: null, bet: null  };
   dollar = React.createRef();
   inzet = React.createRef();
@@ -80,15 +80,16 @@ class App extends Component {
   handleSubmit = async (event) => {
     event.preventDefault()
     const { drizzle, drizzleState } = this.props;
-    const weather = await getWeather(this.city.current.value);
+    const weather = await getWeather2(this.city.current.value);
     const betObject = {
       cityId: weather.id,
       name: this.city.current.value,
       inzet: this.state.inzet,
       dollar: parseInt(this.state.dollar),
       guess: parseInt(this.guess.current.value),
-      time: moment(this.time.current.value).unix(),
-      timeOfNow: moment().unix()
+      time: this.time.current.value,
+      timeOfNow: moment().format("YYYY-MM-DD HH:mm:ss"),
+      quotering: this.state.odds
     }
     placeBet(drizzle, drizzleState, betObject);
 
@@ -160,10 +161,8 @@ class App extends Component {
               </select>
             </div>
 
-            <label><b>Quotering: </b></label> {this.state.odds && this.state.odds}
-                <div className="form-group">
-                  
-                </div>
+            <label><b>Quotering:  {this.state.odds && this.state.odds}</b>  </label>
+               
                 <div>
                   <div className="form-group">
                     <table>
@@ -182,6 +181,11 @@ class App extends Component {
                     </table>
                   </div>
                 </div>
+
+                <div className="form-group">
+                  <b>Je maakt kans op: ${this.state.odds && (Math.round(this.state.dollar * this.state.odds * 100) / 100)} Dollar!
+                   ({this.state.odds && (Math.round(this.state.inzet * this.state.odds * 1000000) / 1000000)} Ether.) </b>
+                  </div>
 
 
             {!this.state.addressReceived && message}

@@ -26,7 +26,7 @@ export const placeBet = async (drizzle, drizzleState, bet) => {
     console.log("stap1" + wei)
     // //placeBet(string memory _cityId, string memory _name, uint _guess, uint _weather_date, uint _date_of_now)
     await contract.methods.placeBet(bet.cityId.toString(), bet.name,parseInt(bet.dollar),
-    parseInt(bet.guess), parseInt(bet.time), parseInt(bet.timeOfNow))  //plaats bet
+    parseInt(bet.guess), bet.time, bet.timeOfNow, parseInt(bet.quotering) * 100)  //plaats bet
     .send({ from: drizzleState.accounts[0], value: wei, gas: 2000000 });
     console.log("stap3")
   
@@ -78,6 +78,7 @@ export const getBetsByUser = async (drizzle) => {  // Deze is nu in gebruik
             .then( async (betIds) => {
             betIds.forEach(async (betId) => { const rawBet = await contract.methods.getCityBet(betId).call();
                 const readableBet = parseDataIntoReadable(rawBet);
+                console.log(readableBet)
                 listBets.push(readableBet);
             });
             

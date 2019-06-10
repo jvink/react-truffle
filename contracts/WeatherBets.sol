@@ -1,10 +1,13 @@
 pragma solidity ^0.4.24;
+import "./DateLib.sol";
 
 import "./OracleInterface.sol";
 import "./Ownable.sol";
 
 contract WeatherBets is Ownable {
     // mappings
+
+    using DateLib for DateLib.DateTime;
     mapping(address => bytes32[]) private userToBets;
     mapping(bytes32 => Bet[]) private cityToBets;
 
@@ -21,17 +24,18 @@ contract WeatherBets is Ownable {
         string city_id; //id van city
         string name;  // naam van de stad
         uint inzet;  // inzet ether van user
-        uint guessing_degree; // temperattur wat  de user raadt
-        uint made_on;  // datum wanneer de bet is gemaakt
-        uint weather_date; //
+        int guessing_degree; // temperattur wat  de user raadt
+        string made_on;  // datum wanneer de bet is gemaakt
+        string weather_date; //
+        uint quotering;
     }
 
     struct BetForAPI{
         address userId;
         bytes32 betId; //id van de bet
         string name;  // naam van de stad
-        uint guess;
-        uint weather_date; //
+        int guess;
+        string weather_date; //
     }
   enum BettableOutcome {
         Degree
@@ -93,9 +97,9 @@ contract WeatherBets is Ownable {
         string memory city_id, //id van city
         string memory name,  // naam van de stad
         uint inzet,
-        uint guess,
-        uint made_on,  // datum wanneer de bet is gemaakt
-        uint weather_date, //
+        int guess,
+         string memory  made_on,  // datum wanneer de bet is gemaakt
+         string memory  weather_date, //
         OracleInterface.BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
        // WeatherData weather;
@@ -113,9 +117,9 @@ contract WeatherBets is Ownable {
         string memory city_id, //id van city
         string memory name,  // naam van de stad
         uint inzet,
-        uint guess,
-        uint made_on,  // datum wanneer de bet is gemaakt
-        uint weather_date, //
+        int guess,
+         string memory  made_on,  // datum wanneer de bet is gemaakt
+         string memory  weather_date, //
         OracleInterface.BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
        // WeatherData weather;
@@ -128,8 +132,8 @@ contract WeatherBets is Ownable {
     /// @notice places a non-rescindable bet on the given match
  
     /// @param _guess the index of the participant chosen as winning_degree
-    function placeBet(string memory _cityId, string memory _name, uint inzet, uint _guess, uint _weather_date,
-    uint _date_of_now) public payable {
+    function placeBet(string memory _cityId, string memory _name, uint inzet, int _guess,  string memory  _weather_date,
+     string memory  _date_of_now, uint _quotering) public payable {
 
         //bet must be above a certain minimum
      //   require(msg.value >= minimumBet, "Bet amount must be >= minimum bet");
@@ -145,7 +149,7 @@ contract WeatherBets is Ownable {
 
         //transfer the money into the account
 
-        bytes32 _betId = weatherOracle.addCityBet(msg.sender, _cityId, _name, inzet, _guess, _date_of_now, _weather_date);
+        bytes32 _betId = weatherOracle.addCityBet(msg.sender, _cityId, _name, inzet, _guess, _date_of_now, _weather_date, _quotering);
 
         // address addr1 = msg.sender;
         // address payable addr3 = address(uint160(addr1)); // This is correct
@@ -153,7 +157,7 @@ contract WeatherBets is Ownable {
 
         //add the new bet
         Bet[] storage bets = cityToBets[_betId];
-        bets.push(Bet(msg.sender, _betId, _cityId, _name, msg.value, _guess, _date_of_now, _weather_date))-1;
+        bets.push(Bet(msg.sender, _betId, _cityId, _name, msg.value, _guess, _date_of_now, _weather_date, _quotering))-1;
 
         //add the mapping
         bytes32[] storage userBets = userToBets[msg.sender];

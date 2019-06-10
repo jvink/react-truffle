@@ -49,12 +49,12 @@ event LogUpdate(address indexed _owner, uint indexed _balance);
     constructor () public payable {
         owner = msg.sender;
  
-        emit LogUpdate(owner, address(this).balance);
+        // emit LogUpdate(owner, address(this).balance);
       
-        // Replace the next line with your version:
-        OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
+        // // Replace the next line with your version:
+        // OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
      
-        oraclize_setProof(proofType_TLSNotary | proofStorage_IPFS);
+        // oraclize_setProof(proofType_TLSNotary | proofStorage_IPFS);
    }
     //defines a CityBet along with its outcome
     struct CityBet {
@@ -63,9 +63,9 @@ event LogUpdate(address indexed _owner, uint indexed _balance);
         string city_id; //id van city
         string name;  // naam van de stad
         uint inzet;
-        uint guess;
-        uint made_on;  // datum wanneer de bet is gemaakt
-        uint weather_date; //
+        int guess;
+        string made_on;  // datum wanneer de bet is gemaakt
+        string weather_date; //
         BetOutcome outcome; // outcome van de weddenschap
         uint quotering;
        // WeatherData weather;
@@ -91,39 +91,39 @@ event LogUpdate(address indexed _owner, uint indexed _balance);
 //    }
  
 // Fallback function
-function()
-public{
-revert();
-}
+// function()
+// public{
+// revert();
+// }
  
-function __callback(bytes32 id, string result, bytes proof)
-public {
-require(msg.sender == oraclize_cbAddress());
+// function __callback(bytes32 id, string result, bytes proof)
+// public {
+// require(msg.sender == oraclize_cbAddress());
  
-ETHUSD = result;
- emit LogPriceUpdate(ETHUSD);
-update();
-}
+// ETHUSD = result;
+//  emit LogPriceUpdate(ETHUSD);
+// update();
+// }
  
-function getBalance()
-public
-returns (uint _balance) {
-return address(this).balance;
-}
+// function getBalance()
+// public
+// returns (uint _balance) {
+// return address(this).balance;
+// }
  
-function update()
-payable
-public {
-// Check if we have enough remaining funds
-if (oraclize_getPrice("URL") > address(this).balance) {
- emit LogInfo("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
-} else {
- emit LogInfo("Oraclize query was sent, standing by for the answer..");
+// function update()
+// payable
+// public {
+// // Check if we have enough remaining funds
+// if (oraclize_getPrice("URL") > address(this).balance) {
+//  emit LogInfo("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
+// } else {
+//  emit LogInfo("Oraclize query was sent, standing by for the answer..");
  
-// Using XPath to to fetch the right element in the JSON response
-oraclize_query(60,"URL", "json(https://api.coinbase.com/v2/prices/ETH-USD/spot).data.amount");
-}
-}
+// // Using XPath to to fetch the right element in the JSON response
+// oraclize_query(60,"URL", "json(https://api.coinbase.com/v2/prices/ETH-USD/spot).data.amount");
+// }
+// }
 
     /// @notice returns the array index of the CityBet with the given id
     /// @dev if the CityBet id is invalid, then the return value will be incorrect and may cause error; you must call cityBetExists(_betId) first!
@@ -146,17 +146,16 @@ oraclize_query(60,"URL", "json(https://api.coinbase.com/v2/prices/ETH-USD/spot).
     /// @param _weather_date weather_date set for the CityBet
     /// @return the unique id of the newly created CityBet
         function addCityBet(address sender, string memory _cityId, string memory _cityName, uint _inzet,
-        uint _guess, uint _made_on, uint _weather_date) public returns (bytes32){
+        int _guess,  string memory  _made_on,  string memory  _weather_date, uint _quotering) public returns (bytes32){
 
         //hash the crucial info to get a unique id
         bytes32 id = keccak256(abi.encodePacked(_cityName, _weather_date, sender));
-        uint quotering = 110; // test
 
         //require that the CityBet be unique (not already added)
         require(!cityBetExists(id), "does exist already");
 
         uint newIndex = citybets.push(CityBet(sender, id, _cityId, _cityName, _inzet, _guess, _made_on, _weather_date,
-        BetOutcome.Pending, quotering, -100))-1;
+        BetOutcome.Pending, _quotering, -100))-1;
         cityIdToIndex[id] = newIndex+1;
 
         //return the unique id of the new CityBet
@@ -170,8 +169,8 @@ oraclize_query(60,"URL", "json(https://api.coinbase.com/v2/prices/ETH-USD/spot).
         address userId,
         bytes32 betId,//id van de bet
         string memory name,  // naam van de stad
-        uint guess,
-        uint weather_date //
+        int guess,
+        string weather_date //
     ) {
 
         //require that it exists
@@ -241,9 +240,9 @@ oraclize_query(60,"URL", "json(https://api.coinbase.com/v2/prices/ETH-USD/spot).
         string memory city_id, //id van city
         string memory name,  // naam van de stad
         uint inzet,
-        uint guess,
-        uint made_on,  // datum wanneer de bet is gemaakt
-        uint weather_date, //
+        int guess,
+         string memory  made_on,  // datum wanneer de bet is gemaakt
+         string memory  weather_date, //
          BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
        // WeatherData weather;
@@ -256,7 +255,7 @@ oraclize_query(60,"URL", "json(https://api.coinbase.com/v2/prices/ETH-USD/spot).
             theCity.outcome, theCity.quotering, theCity.winning_degree);
         }
         else {
-            return (address(0x0), _betId, "", "", 0, 0, 0, 0, BetOutcome.Pending, 0, -1);
+            return (address(0x0), _betId, "", "", 0, 0, "00-00-00 00:00:00", "00-00-00 00:00:00", BetOutcome.Pending, 0, -1);
         }
     }
 
@@ -269,9 +268,9 @@ oraclize_query(60,"URL", "json(https://api.coinbase.com/v2/prices/ETH-USD/spot).
         string memory city_id, //id van city
         string memory name,  // naam van de stad
         uint inzet,
-        uint guess,
-        uint made_on,  // datum wanneer de bet is gemaakt
-        uint weather_date, //
+        int guess,
+         string memory  made_on,  // datum wanneer de bet is gemaakt
+         string memory  weather_date, //
          BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
        // WeatherData weather;
