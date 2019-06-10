@@ -6,8 +6,11 @@ import "./css/App.css";
 import { getBetsByUser } from "./BetFunctions";
 
 
+
 class App extends Component {
-  state = { ETH: 0, loading: true, drizzleState: null, storageValue: 0, stackId: null, oracleReady: false, bets: [], detail: null, changeContent: false, betId: null};
+  state = { ETH: 0, loading: true, drizzleState: null, storageValue: 0, stackId: null, oracleReady: false, bets: [], detail: null, changeContent: false, betId: null,
+  
+    };
   inzet = React.createRef();
   city = React.createRef();
   time = React.createRef();

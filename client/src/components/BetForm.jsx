@@ -5,10 +5,15 @@ import CoinValue from "../CoinValue";
 import moment from 'moment';
 import { ReactComponent as EtherIcon } from './eth.svg';
 import "../css/App.css";
+import getForeCastWeather from "../ForeCastWeather";
+import getOdds from "../Odds"
+import getPreviewBets from "../PreviewBets"
+import getPreviewOdds from "../PreviewOdds.js";
 
 
 class App extends Component {
-  state = { weather: null, inzet: 0, city: 'Rotterdam', changeContent: false };
+  state = { weather: null, inzet: 0, city: 'Rotterdam', changeContent: false,
+  forecastWeather: null, date: null, odds: null, previewBets: null, previewOdds: null, bet: null  };
   dollar = React.createRef();
   inzet = React.createRef();
   guess = React.createRef();
@@ -20,14 +25,56 @@ class App extends Component {
     this.setState({ addressReceived: props.oracleReady })
     console.log("komt ie hier nog langs 2/")
   }
-  componentDidMount = () => {
-    this.setState({ addressReceived: this.props.oracleReady })
+  componentDidMount = async () => {
+    this.setState({ addressReceived: this.props.oracleReady, weather: await getWeather(this.state.city) })
+
+    const { weather } = this.state;
+    this.state.date = weather[0].dt_txt;
+    this.state.forecastWeather = await getForeCastWeather(this.state.date, this.state.city);
+    this.state.odds = await getOdds(Math.round(this.state.forecastWeather), this.state.bet, this.state.weather, this.state.date)
+    this.state.previewBets = await getPreviewBets(Math.round(this.state.forecastWeather));
+    this.state.previewOdds = await getPreviewOdds(this.state.previewBets, this.state.forecastWeather, this.state.weather, this.state.date);
+    console.log(this.state.previewOdds);
+
+
     console.log("komt ie hier nog langs 2/")
   }
   onChangeCity = async (e) => {
     let { value } = e.target;
     const weather = await getWeather(value);
-    this.setState({ weather });
+    this.setState({ weather, city: value });
+
+    const forecastWeather = await getForeCastWeather(this.state.date, value);
+    this.setState({ forecastWeather });
+    const odds = await getOdds(Math.round(forecastWeather), this.state.bet, weather, this.state.date);
+    this.setState({ odds });
+    const previewBets =  await getPreviewBets(Math.round(forecastWeather));
+    this.setState({ previewBets });
+  }
+  onChangeDate = async (e) => {
+    let {value} = e.target;
+    const date = value;
+    console.log(date);
+    this.setState({ date })
+    const forecastWeather = await getForeCastWeather(date, this.state.city);
+    this.setState({ forecastWeather });
+    const odds = await getOdds(Math.round(forecastWeather), this.state.bet, this.state.weather, date);
+    this.setState({ odds });
+    const previewBets =  await getPreviewBets(Math.round(forecastWeather));
+    this.setState({ previewBets });
+  }
+
+  onChangeTemperatuur = async (e) => {
+    let {value} = e.target;
+    const bet = value;
+    this.setState({ bet });
+    console.log(bet)
+
+    const odds = await getOdds(Math.round(this.state.forecastWeather), bet, this.state.weather, this.state.date);
+    console.log(odds)
+    this.setState({ odds });
+    const previewBets =  await getPreviewBets(Math.round(this.state.forecastWeather));
+    this.setState({ previewBets });
   }
 
   handleSubmit = async (event) => {
@@ -59,9 +106,10 @@ class App extends Component {
   }
 
   render() {
-    if (this.state.loading) {
-      return <div>Loading Drizzle, Web3, Metamask...</div>;
+    if (!this.state.weather) {
+      return <div>Weer is aan het laden...</div>;
     }
+
     console.log(this.state.addressReceived)
     var date = moment().format("YYYY-MM-DD");
     var time = "00:00";
@@ -90,11 +138,11 @@ class App extends Component {
             </div>
             <label>Welke temperatuur wed je?</label>
             <div className="input-group mb-2">
-              <input type="number" className="form-control" placeholder={`Hoeveel graden wordt het in ${this.state.city}?`} ref={this.guess} required />
+              <input type="number" className="form-control" placeholder={`Hoeveel graden wordt het in ${this.state.city}?`} onChange={this.onChangeTemperatuur}  ref={this.guess} required />
             </div>
             <div className="form-group">
               <label>Locatie</label>
-              <select className="form-control" ref={this.city} onChange={(e) => this.setState({ city: e.target.value })} >
+              <select className="form-control" ref={this.city} onChange={this.onChangeCity} >
                 <option>Rotterdam</option>
                 <option>Amsterdam</option>
                 <option>Breda</option>
@@ -104,17 +152,38 @@ class App extends Component {
             </div>
             <div className="form-group">
               <label>Datum</label>
-              <select className="form-control" ref={this.time} >
-              {days.map( (x) => {
-                return hours.map(y => {
-                  return <option value={moment(calcTimeAndDate).add(x, 'days').add(y, 'hours').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(x, 'days').add(y, 'hours').format("DD-MM-YYYY HH:mm")}</option>
-                }
-                )
-              })
-            }
+              <select className="form-control" onChange={this.onChangeDate} ref={this.time} >
+                  {this.state.weather.map((weather, index) => {
+                      return <option key={index}>{weather.dt_txt}</option>
+                    })}
       
               </select>
             </div>
+
+            <label><b>Quotering: </b></label> {this.state.odds && this.state.odds}
+                <div className="form-group">
+                  
+                </div>
+                <div>
+                  <div className="form-group">
+                    <table>
+                      <tbody>
+                        <tr>
+                          {this.state.previewBets && this.state.previewBets.map((previewBets, index) => {
+                            return <td className="quotering" key ={index}>{previewBets} C°</td>
+                          })}
+                        </tr>
+                          {this.state.previewOdds && this.state.previewOdds.map((previewOdds, index) => {
+                            return <td className="quotering" key ={index}>{previewOdds}</td>
+                          })}
+                        <tr>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+
             {!this.state.addressReceived && message}
             <div style={{ display: 'flex' }}>
               <button type="button" className="btn btn-secondary">Annuleren</button>
@@ -129,3 +198,11 @@ class App extends Component {
 
 export default App;
 
+
+// {days.map( (x) => {
+//   return hours.map(y => {
+//     return <option value={moment(calcTimeAndDate).add(x, 'days').add(y, 'hours').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(x, 'days').add(y, 'hours').format("DD-MM-YYYY HH:mm")}</option>
+//   }
+//   )
+// })
+// }

@@ -22,12 +22,12 @@ class App extends Component {
   checkWin = async () => {
     const { drizzle, drizzleState } = this.props;
     
-        const checkDate = async () => {
-      changeOutcome(drizzle, drizzleState, this.state.bets);
-      }
+      //   const checkDate = async () => {
+      // changeOutcome(drizzle, drizzleState, this.state.bets);
+      // }
   
       if(this.state.bets){
-          checkDate();
+         // checkDate();
       }  
     }
 

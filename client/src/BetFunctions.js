@@ -1,4 +1,5 @@
 import { getPastWeather } from "./Weather";
+import moment from 'moment';
 
 const parseDataIntoReadable = (bet) => {
     const betObject = {
@@ -96,18 +97,20 @@ export const changeOutcome = async (drizzle, drizzleState, bets) => {
     try {
   
         bets.forEach(async(bet) => {
-            const checkExpired = Date.now() /1000 > bet.weather_date;
-            if (checkExpired) {
+         //  const checkExpired = Date.now() /1000 > bet.weather_date;
+           // if (checkExpired) {
                 if(parseInt(bet.outcome) !== 1){
                     listBetIds.push(bet.id);
                 }
-            }       
+            //}       
         });
         const contract = drizzle.contracts.WeatherBets;
         if(listBetIds.length !== 0){
-             await contract.methods.setDecided(listBetIds)
-            .send({ from: drizzleState.accounts[0], gas: 3000000 });
-            checkIfWon(drizzle, contract);
+            //await contract.methods.checkwin(listBetIds);
+            
+            //   await contract.methods.setDecided(listBetIds)
+            //  .send({ from: drizzleState.accounts[0], gas: 3000000 });
+            // checkIfWon(drizzle, contract);
         }
         else{
             alert("Je hebt nog lopende weddenschappen.")
@@ -153,21 +156,23 @@ const checkIfWon =(drizzle, contract) =>{
         console.log(betIds)
         betIds.forEach(async (betId) => { const rawBet = await contract.methods.getCityBet(betId).call();
             const readableBet = parseDataIntoReadable(rawBet); console.log(readableBet)
-            const weather = await getPastWeather(readableBet.name, '2019-06-02');
-            // listBets.push(readableBet);
 
+            console.log(readableBet.name)
+          //  const weather = await getPastWeather(readableBet.name, formatDate(new Date(1559744448 *1000)));
 
-            const win = parseInt(weather.forecast.forecastday[0].hour[12].temp_c) === readableBet.guess;
-            if(win){
-                console.log("win, insert here smart contract functie met betaling en outcome change");
-                winningBets.push(betId);  // nog functie komen om naar contract te sturen.
-                alert("Je hebt gewonnen")
-            }
-            else{    
-                console.log("You lost man, no moneys back");    
-                losingBets.push(betId);
-                alert("niks gewonnen helaas")
-            }
+        //    const weather_at_specific_hour = weather.forecast.forecastday[0].hour[gethour(new Date(1559744448 *1000))].temp_c;
+          //  console.log(weather_at_specific_hour);
+         //  const win = parseInt(weather_at_specific_hour) === readableBet.guess;
+            // if(win){
+            //     console.log("win, insert here smart contract functie met betaling en outcome change");
+            //     winningBets.push(betId);  // nog functie komen om naar contract te sturen.
+            //     alert("Je hebt gewonnen")
+            // }
+            // else{    
+            //     console.log("You lost man, no moneys back");    
+            //     losingBets.push(betId);
+            //     alert("niks gewonnen helaas")
+            // }
         });
    
 
@@ -202,6 +207,12 @@ function formatDateWithHour(date) {
  if (min.length < 2) min = '0' + min;
 
  return [year, month, day].join('-') + " " + hour + ":" + min;
+}
+
+function gethour(date) {
+    const hour = date.getHours()
+    console.log(hour);
+    return hour;
 }
 
 

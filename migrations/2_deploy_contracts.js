@@ -1,6 +1,7 @@
 var SimpleStorage = artifacts.require("./SimpleStorage.sol");
 var Bets = artifacts.require("./WeatherBets.sol");
 var OraclizeTest = artifacts.require("./OraclizeTest.sol");
+var WeatherOracle = artifacts.require("./WeatherOracle.sol");
 
 
 // Deploys the OraclizeTest contract and funds it with 0.5 ETH
@@ -14,6 +15,8 @@ module.exports = function(deployer, network, accounts) {
     await deployer.deploy(Bets);
     await deployer.deploy(
       OraclizeTest,
+      { from: accounts[9], gas:6721975, value: 500000000000000000 });
+    await deployer.deploy(WeatherOracle,
       { from: accounts[9], gas:6721975, value: 500000000000000000 });
   })
 };
