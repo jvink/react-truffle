@@ -7,7 +7,7 @@ import { getBetsByUser } from "./BetFunctions";
 
 
 class App extends Component {
-  state = { loading: true, drizzleState: null, storageValue: 0, stackId: null, oracleReady: false, bets: [], detail: null, changeContent: false, betId: null};
+  state = { ETH: 0, loading: true, drizzleState: null, storageValue: 0, stackId: null, oracleReady: false, bets: [], detail: null, changeContent: false, betId: null};
   inzet = React.createRef();
   city = React.createRef();
   time = React.createRef();
@@ -36,6 +36,7 @@ class App extends Component {
     try {
       const contract = drizzle.contracts.SimpleStorage;
       const contract2 = drizzle.contracts.WeatherBets;
+      const contract3 = drizzle.contracts.OraclizeTest;
 console.log("komt ie hier nog langs?")
       if (!this.state.oracleReady) {     
         await contract2.methods.getOracleAddress().call()
@@ -47,8 +48,22 @@ console.log("komt ie hier nog langs?")
           }
           )
       }
+      console.log(contract3);
+      contract3.events.LogPriceUpdate({
+      // Using an array means OR: e.g. 20 or 23
+         fromBlock: 0,
+         to: 'latest'
+     }, (error, event) => { console.log(event); })
+     .on('data', (event) => {
+         console.log(event.returnValues.price);
+         this.setState({ETH:event.returnValues.price}); // same results as the optional callback above
+     })
+     .on('changed', (event) => {
+         // remove event from local database
+     })
+     .on('error', console.error);
 
-      
+
      this.setState({bets: await getBetsByUser(drizzle)});
      var value = await contract.methods.get().call()
       if(value) this.setState({storageValue: value})
@@ -82,6 +97,8 @@ console.log("komt ie hier nog langs?")
           </div>
           <BetList drizzle={drizzle} drizzleState={drizzleState} storageValue={storageValue} bets={bets} onClickDetail={(changeContent) => this.setState({ changeContent: true })} 
           onClickSetBetId={this.setBetId} />
+
+           {this.state.ETH}
         </div>
       </div>
     );
