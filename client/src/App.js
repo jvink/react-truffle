@@ -55,8 +55,11 @@ console.log("komt ie hier nog langs?")
          to: 'latest'
      }, (error, event) => { console.log(event); })
      .on('data', (event) => {
+       
          console.log(event.returnValues.price);
-         this.setState({ETH:event.returnValues.price}); // same results as the optional callback above
+        this.setState({ETH:event.returnValues.price}); // same results as the optional callback above
+        
+         
      })
      .on('changed', (event) => {
          // remove event from local database

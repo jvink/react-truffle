@@ -6,14 +6,13 @@ module.exports = {
   contracts_build_directory: path.join(__dirname, "client/src/contracts"),
 
   networks: {
-    ganache: {
+    development: {
     host: "localhost",
-    port: 7545,
+    port: 9545,
     network_id: "*", // Match any network id
     gas:500000,
     },
     },
-
  compilers: {
 
 solc: {

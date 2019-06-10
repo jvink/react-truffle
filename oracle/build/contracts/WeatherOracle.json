@@ -14804,12 +14804,12 @@
         }
       },
       "links": {},
-      "address": "0xCaE02FE4A50B86a9Fa6518BEC05A067587b42ca6",
-      "transactionHash": "0x27be04ad71005c740d3d7da9434657c98dd4441771f609c4420ab1bd820c5d37"
+      "address": "0xB07EF2589cbF4570ca7DEb9929880257cEac0942",
+      "transactionHash": "0xb83ee71a5a47336d04792104b98b50abc61679528e958be6557d0311787f7b7a"
     }
   },
   "schemaVersion": "3.0.10",
-  "updatedAt": "2019-06-10T13:59:33.275Z",
+  "updatedAt": "2019-06-10T15:20:14.546Z",
   "devdoc": {
     "methods": {
       "addCityBet(address,string,string,uint256,uint256,uint256,uint256)": {

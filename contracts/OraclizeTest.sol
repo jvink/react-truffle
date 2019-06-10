@@ -56,7 +56,7 @@ if (oraclize_getPrice("URL") > address(this).balance) {
  emit LogInfo("Oraclize query was sent, standing by for the answer..");
  
 // Using XPath to to fetch the right element in the JSON response
-oraclize_query("URL", "json(https://api.coinbase.com/v2/prices/ETH-USD/spot).data.amount");
+oraclize_query(60,"URL", "json(https://api.coinbase.com/v2/prices/ETH-USD/spot).data.amount");
 }
 }
  
