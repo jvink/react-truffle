@@ -4,11 +4,12 @@ import BetList from "./components/BetList";
 import BetDetails from "./components/BetDetails";
 import "./css/App.css";
 import { getBetsByUser } from "./BetFunctions";
-
+import Modal from "./components/ModalforFinish";
 
 
 class App extends Component {
   state = { ETH: 0, loading: true, drizzleState: null, storageValue: 0, stackId: null, oracleReady: false, bets: [], detail: null, changeContent: false, betId: null,
+    retrievedWeather: null, ModalOpen: false
   
     };
   inzet = React.createRef();
@@ -39,7 +40,8 @@ class App extends Component {
     try {
       const contract = drizzle.contracts.SimpleStorage;
       const contract2 = drizzle.contracts.WeatherBets;
-      const contract3 = drizzle.contracts.OraclizeTest;
+      const contract4 = drizzle.contracts.WeatherOracle; // Dit gaat later nog naar aparte map
+
 console.log("komt ie hier nog langs?")
       if (!this.state.oracleReady) {     
         await contract2.methods.getOracleAddress().call()
@@ -51,36 +53,82 @@ console.log("komt ie hier nog langs?")
           }
           )
       }
-      console.log(contract3);
-      contract3.events.LogPriceUpdate({
-      // Using an array means OR: e.g. 20 or 23
-         fromBlock: 0,
-         to: 'latest'
-     }, (error, event) => { console.log(event); })
-     .on('data', (event) => {
-       
-         console.log(event.returnValues.price);
-        this.setState({ETH:event.returnValues.price}); // same results as the optional callback above
-        
-         
-     })
-     .on('changed', (event) => {
-         // remove event from local database
-     })
-     .on('error', console.error);
+      console.log(contract4);
 
+      this.setState({bets: await getBetsByUser(drizzle)});
 
-     this.setState({bets: await getBetsByUser(drizzle)});
-     var value = await contract.methods.get().call()
-      if(value) this.setState({storageValue: value})
+      var value = await contract.methods.get().call()
+       if(value) this.setState({storageValue: value})
+
+      if(this.state.oracleReady){
+        this.listenToInfo(contract4);
+
+        this.listenToFinishedBets(contract4);
+
+        if(this.state.betinfo){
+
+        }
+
+        const balance = await contract4.methods.getBalance().call();
+        console.log(balance)
+        //this.setState({balance});
+      }  
+     
+
           }
       catch{
       alert("Wait few seconds then restart browser, probably the contracts take time to deploy.")
     }
   };
+  
+
+  listenToFinishedBets =  (contract) => {
+    contract.events.LogWeatherUpdate({
+      // Using an array means OR: e.g. 20 or 23
+         fromBlock: 0,
+         to: 'latest'
+     }, (error, event) => { console.log(event); })
+     .on('data', async(event) => {
+         console.log(event.returnValues.weather);
+         const weather = JSON.parse(event.returnValues.weather)
+         const retrievedWeather = {temp: weather[0].temp, dt: weather[1] }
+         await this.setState({retrievedWeather})
+       
+     })
+     .on('changed', (event) => {
+         // remove event from local database
+     })
+     .on('error', console.error);
+  }
+
+  listenToInfo = (contract) => {
+    contract.events.LogInfo({
+      // Using an array means OR: e.g. 20 or 23
+         fromBlock: 0,
+         to: 'latest'
+     }, (error, event) => { console.log(event); })
+     .on('data', (event) => {
+         console.log(event.returnValues);
+     })
+     .on('changed', (event) => {
+         // remove event from local database
+     })
+     .on('error', console.error);
+  }
+
 
   setBetId = async (betId) => {
     this.setState({betId: betId});  
+  }
+
+  checkforWin = () => {
+    const {drizzle} = this.props;
+    const {drizzleState, bets, retrievedWeather} = this.state;
+    // bets.forEach(bet => {
+
+      
+    // });
+
   }
 
   render() {
@@ -90,6 +138,7 @@ console.log("komt ie hier nog langs?")
     const { drizzle } = this.props;
     const { drizzleState, storageValue, oracleReady, bets } = this.state;
     console.log(this.state.oracleReady)
+    console.log(this.state.retrievedWeather)
     return (
       <div className="container">
         <div className="row">
@@ -104,8 +153,16 @@ console.log("komt ie hier nog langs?")
           <BetList drizzle={drizzle} drizzleState={drizzleState} storageValue={storageValue} bets={bets} onClickDetail={(changeContent) => this.setState({ changeContent: true })} 
           onClickSetBetId={this.setBetId} />
 
-           {this.state.ETH}
+            {this.state.balance && this.state.balance}
+ 
+            {this.state.retrievedWeather && 
+              <ul>
+                <li>{this.state.retrievedWeather.temp}</li>
+                <li>{this.state.retrievedWeather.dt}</li>    
+              </ul>   
+              } 
         </div>
+        <Modal isOpen={this.state.ModalOpen}/>
       </div>
     );
   }

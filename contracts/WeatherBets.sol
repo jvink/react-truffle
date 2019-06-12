@@ -25,8 +25,8 @@ contract WeatherBets is Ownable {
         string name;  // naam van de stad
         uint inzet;  // inzet ether van user
         int guessing_degree; // temperattur wat  de user raadt
-        string made_on;  // datum wanneer de bet is gemaakt
-        string weather_date; //
+        uint made_on;  // datum wanneer de bet is gemaakt
+        uint weather_date; //
         uint quotering;
     }
 
@@ -35,7 +35,7 @@ contract WeatherBets is Ownable {
         bytes32 betId; //id van de bet
         string name;  // naam van de stad
         int guess;
-        string weather_date; //
+        uint weather_date; //
     }
   enum BettableOutcome {
         Degree
@@ -52,7 +52,7 @@ contract WeatherBets is Ownable {
 
     /// @notice gets the address of the boxing oracle being used
     /// @return the address of the currently set oracle
-    function getOracleAddress() external view returns (address) {
+    function getOracleAddress() public view returns (address) {
         return weatherOracleAddr;
     }
 
@@ -98,8 +98,8 @@ contract WeatherBets is Ownable {
         string memory name,  // naam van de stad
         uint inzet,
         int guess,
-         string memory  made_on,  // datum wanneer de bet is gemaakt
-         string memory  weather_date, //
+        uint made_on,  // datum wanneer de bet is gemaakt
+        uint weather_date, //
         OracleInterface.BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
        // WeatherData weather;
@@ -118,8 +118,8 @@ contract WeatherBets is Ownable {
         string memory name,  // naam van de stad
         uint inzet,
         int guess,
-         string memory  made_on,  // datum wanneer de bet is gemaakt
-         string memory  weather_date, //
+        uint made_on,  // datum wanneer de bet is gemaakt
+        uint weather_date, //
         OracleInterface.BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
        // WeatherData weather;
@@ -132,8 +132,8 @@ contract WeatherBets is Ownable {
     /// @notice places a non-rescindable bet on the given match
  
     /// @param _guess the index of the participant chosen as winning_degree
-    function placeBet(string memory _cityId, string memory _name, uint inzet, int _guess,  string memory  _weather_date,
-     string memory  _date_of_now, uint _quotering) public payable {
+    function placeBet(string memory _cityId, string memory _name, uint inzet, int _guess,  uint _weather_date,
+     uint _date_of_now, uint _quotering) public payable {
 
         //bet must be above a certain minimum
      //   require(msg.value >= minimumBet, "Bet amount must be >= minimum bet");
@@ -146,22 +146,25 @@ contract WeatherBets is Ownable {
 
         //match must still be open for betting
     //    require(_matchOpenForBetting(_betId), "Match not open for betting");
+    
 
         //transfer the money into the account
 
-        bytes32 _betId = weatherOracle.addCityBet(msg.sender, _cityId, _name, inzet, _guess, _date_of_now, _weather_date, _quotering);
+         bytes32 _betId = weatherOracle.addCityBet(msg.sender, _cityId, _name, inzet, _guess, _date_of_now, _weather_date, _quotering);
 
-        // address addr1 = msg.sender;
-        // address payable addr3 = address(uint160(addr1)); // This is correct
-        // addr3.transfer(msg.value);
+        // // address addr1 = msg.sender;
+        // // address payable addr3 = address(uint160(addr1)); // This is correct
+        // // addr3.transfer(msg.value);
 
-        //add the new bet
-        Bet[] storage bets = cityToBets[_betId];
-        bets.push(Bet(msg.sender, _betId, _cityId, _name, msg.value, _guess, _date_of_now, _weather_date, _quotering))-1;
+        // //add the new bet
+         Bet[] storage bets = cityToBets[_betId];
+         bets.push(Bet(msg.sender, _betId, _cityId, _name, inzet, _guess, _date_of_now, _weather_date, _quotering))-1;
 
-        //add the mapping
-        bytes32[] storage userBets = userToBets[msg.sender];
-        userBets.push(_betId);   // deze account doet een bet op deze betId
+        // //add the mapping
+         bytes32[] storage userBets = userToBets[msg.sender];
+         userBets.push(_betId);   // deze account doet een bet op deze betId
+
+        // getOracleAddress().transfer(msg.value);
     }
     function setDecided(bytes32[] memory _betIds) public payable {
 

@@ -1,6 +1,8 @@
 pragma solidity ^0.4.24;
+pragma experimental ABIEncoderV2;
 import "./Ownable.sol";
 import "./DateLib.sol";
+import "installed_contracts/oraclize-api/contracts/usingOraclize.sol";
 /*
 TEST:
 - testConnection
@@ -34,27 +36,39 @@ TEST:
 // http://api.openweathermap.org/data/2.5/weather?q=Rotterdam,nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57
 // voor huidige weer van een bepaalde stad, in dit geval voor Rotterdam
 
-contract WeatherOracle is Ownable {
+contract WeatherOracle is Ownable, usingOraclize {
   mapping(bytes32 => uint) cityIdToIndex;
     CityBet[] citybets;
 
+    mapping(bytes32 => bytes32[]) betIdToQueries;
+    mapping(bytes32 => string) queryToResult;
+
      using DateLib for DateLib.DateTime;
 
-    string public ETHUSD;
+    string public weather;
+    string public dt;
      
-event LogInfo(string description);
-event LogPriceUpdate(string price);
-event LogUpdate(address indexed _owner, uint indexed _balance);
+    event LogInfo(string description);
+    event LogWeatherUpdate(string weather);
+    event LogUpdate(address indexed _owner, uint indexed _balance);
+
+    event Log(string text);
+    enum oraclizeState { temp, dt }
+
+    struct oraclizeCallback {
+         oraclizeState oState;
+     }
+            mapping (bytes32 => oraclizeCallback) public oraclizeCallbacks;
 
     constructor () public payable {
         owner = msg.sender;
  
-        // emit LogUpdate(owner, address(this).balance);
+        emit LogUpdate(owner, address(this).balance);
       
-        // // Replace the next line with your version:
-        // OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
-     
-        // oraclize_setProof(proofType_TLSNotary | proofStorage_IPFS);
+        // Replace the next line with your version:
+        OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
+
+        oraclize_setProof(proofType_TLSNotary | proofStorage_IPFS);
    }
     //defines a CityBet along with its outcome
     struct CityBet {
@@ -64,19 +78,13 @@ event LogUpdate(address indexed _owner, uint indexed _balance);
         string name;  // naam van de stad
         uint inzet;
         int guess;
-        string made_on;  // datum wanneer de bet is gemaakt
-        string weather_date; //
+        uint made_on;  // datum wanneer de bet is gemaakt
+        uint weather_date; //
         BetOutcome outcome; // outcome van de weddenschap
         uint quotering;
        // WeatherData weather;
         int winning_degree; // Welke temperatuur het is geworden
     }
-
-    // struct WeatherData {
-    //   int8 humidity;  /// @param humidity is how moist the air is..
-    //   int8 cloudPercentage; /// @param cloudPercentage is how much cloudiness there is 100 is max, 0 is min
-    //   int8 spanIndex; ///  @param spanIndex is how long in advance the bet is made before the bet finishes.
-    // }
 
     enum BetOutcome {
         Pending,    //day has not come yet to decision
@@ -84,46 +92,21 @@ event LogUpdate(address indexed _owner, uint indexed _balance);
         Won,
         Lost     //index of participant who is the winning_degree
     }
-//      function __callback(bytes32 myid, string result) public {
-//        if (msg.sender != oraclize_cbAddress()) revert("revert oracle");
-//        ETHUSD = result;
-//        emit LogUpdated(result);
-//    }
+
+    function() public{
+        revert();
+    }
  
-// Fallback function
-// function()
-// public{
-// revert();
-// }
+    function __callback(bytes32 id, string result, bytes proof) public {
+        require(msg.sender == oraclize_cbAddress());
+    
+        weather = result;
+        emit LogWeatherUpdate(weather);
+    }
  
-// function __callback(bytes32 id, string result, bytes proof)
-// public {
-// require(msg.sender == oraclize_cbAddress());
- 
-// ETHUSD = result;
-//  emit LogPriceUpdate(ETHUSD);
-// update();
-// }
- 
-// function getBalance()
-// public
-// returns (uint _balance) {
-// return address(this).balance;
-// }
- 
-// function update()
-// payable
-// public {
-// // Check if we have enough remaining funds
-// if (oraclize_getPrice("URL") > address(this).balance) {
-//  emit LogInfo("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
-// } else {
-//  emit LogInfo("Oraclize query was sent, standing by for the answer..");
- 
-// // Using XPath to to fetch the right element in the JSON response
-// oraclize_query(60,"URL", "json(https://api.coinbase.com/v2/prices/ETH-USD/spot).data.amount");
-// }
-// }
+    function getBalance() public returns (uint _balance) {
+        return address(this).balance;
+    }
 
     /// @notice returns the array index of the CityBet with the given id
     /// @dev if the CityBet id is invalid, then the return value will be incorrect and may cause error; you must call cityBetExists(_betId) first!
@@ -145,50 +128,96 @@ event LogUpdate(address indexed _owner, uint indexed _balance);
     /// @param _cityName descriptive name for the CityBet (e.g. Pac vs. Mayweather 2016)
     /// @param _weather_date weather_date set for the CityBet
     /// @return the unique id of the newly created CityBet
-        function addCityBet(address sender, string memory _cityId, string memory _cityName, uint _inzet,
-        int _guess,  string memory  _made_on,  string memory  _weather_date, uint _quotering) public returns (bytes32){
+    function addCityBet(address _sender, string memory _cityId, string memory _cityName, uint _inzet,
+        int _guess,  uint   _made_on,  uint  _weather_date, uint _quotering) public payable returns (bytes32){
+            // Check if we have enough remaining funds
+        if (oraclize_getPrice("URL") > address(this).balance) {
 
-        //hash the crucial info to get a unique id
-        bytes32 id = keccak256(abi.encodePacked(_cityName, _weather_date, sender));
+            emit LogInfo("Oraclize query was NOT sent, please add some ETH to cover for the query fee");
 
-        //require that the CityBet be unique (not already added)
-        require(!cityBetExists(id), "does exist already");
+        } else {
+        
+            emit LogInfo("Oraclize query was sent, standing by for the answer..");
 
-        uint newIndex = citybets.push(CityBet(sender, id, _cityId, _cityName, _inzet, _guess, _made_on, _weather_date,
-        BetOutcome.Pending, _quotering, -100))-1;
-        cityIdToIndex[id] = newIndex+1;
+            // string[] memory list;
+            // list[0] = return_string(_cityName, 0);
+            // list[1] = return_string(_cityName, 1);
+            // Using XPath to to fetch the right element in the JSON response
+            bytes32 id = keccak256(abi.encodePacked(_cityName, _weather_date, _sender));
 
-        //return the unique id of the new CityBet
-        return id;
+            do_query(1560346647, _cityName, id);
+           
+            //hash the crucial info to get a unique id
+            
+            // //require that the CityBet be unique (not already added)
+             require(!cityBetExists(id), "does exist already");
+
+             uint newIndex = citybets.push(CityBet(_sender, id, _cityId, _cityName, _inzet, _guess, _made_on, _weather_date,
+             BetOutcome.Pending, _quotering, -100))-1;
+             cityIdToIndex[id] = newIndex+1;
+
+            //return the unique id of the new CityBet
+            return id;
+
+            }
+    }
+    function do_query (uint timestamp, string _cityName, bytes32 _betId) private {
+        emit Log("Oraclize query were sent, waiting for the answer for getting temp and dt");
+        
+        bytes32[] storage queries = betIdToQueries[_betId];
+        //first query for temp_c
+        bytes32 queryId = oraclize_query(timestamp,"URL", return_string(_cityName));
+          //oraclizeCallbacks[queryId] = oraclizeCallback(oraclizeState.temp);
+          queries.push(queryId);
+
+        // // second query for dt
+        //   bytes32 queryId2 = oraclize_query(1560339117,"URL", return_string(_cityName, 1));
+        //    oraclizeCallbacks[queryId2] = oraclizeCallback(oraclizeState.dt);
+        //     queryIdToBetId[queryId2] = _betId;
+        //     queries.push(queryId2);
+    }
+    function return_string(string _city) private returns (string ) {
+        string memory one = "json(http://api.openweathermap.org/data/2.5/weather?q=";
+        // string memory third = ",nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57).main.temp";
+        // string memory fourth = ",nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57).dt";
+        string memory extra = ",nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57).[\"main\", \"dt\"]";
+        // if(number == 0) {
+        //     return strConcat(one, _city, third);
+        // }
+        // else{
+        //     return strConcat(one, _city, fourth);
+        // }
+        return strConcat(one, _city, extra);
     }
 
     /// @notice sets the outcome of a predefined CityBet, permanently on the blockchain
     /// @param _betId unique id of the CityBet to modify
     // / @param _outcome outcome of the CityBet
-    function declareOutcome(bytes32 _betId) public returns (
-        address userId,
-        bytes32 betId,//id van de bet
-        string memory name,  // naam van de stad
-        int guess,
-        string weather_date //
-    ) {
-
+    function declareOutcome(bytes32 _betId, uint outcome) public payable returns (bytes32 betId) {
         //require that it exists
         require(cityBetExists(_betId), "does not exist");
 
         //get the CityBet
         uint index = _getCityBetIndex(_betId);
         CityBet storage theCityBet = citybets[index];
-
     //    if (_outcome == BetOutcome.Decided)
          //   require(_winning_degree >= 0 && theMatch.participantCount > uint8(_winning_degree), "invalid winning_degree");
-
         //set the outcome
-        theCityBet.outcome = BetOutcome.Decided;
+        if(outcome == 2){
+            uint winst = theCityBet.quotering * msg.value / 100;
+            require(address(this).balance < winst, "too less balance on contract");
+            theCityBet.userId.transfer(winst);
+            theCityBet.outcome = BetOutcome.Won;
+        }
+        if(outcome == 3){
+            theCityBet.outcome = BetOutcome.Lost;
+        }
+
+
         //set the winning_degree (if there is one)
         //if (_outcome == BetOutcome.Decided) theCityBet.winning_degree = _winning_degree;
 
-         return (theCityBet.userId, theCityBet.betId, theCityBet.name, theCityBet.guess, theCityBet.weather_date);
+         return theCityBet.betId;
     }
 
     /// @notice gets the unique ids of all pending citybets, in reverse chronological order
@@ -241,8 +270,8 @@ event LogUpdate(address indexed _owner, uint indexed _balance);
         string memory name,  // naam van de stad
         uint inzet,
         int guess,
-         string memory  made_on,  // datum wanneer de bet is gemaakt
-         string memory  weather_date, //
+         uint made_on,  // datum wanneer de bet is gemaakt
+         uint weather_date, //
          BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
        // WeatherData weather;
@@ -255,7 +284,7 @@ event LogUpdate(address indexed _owner, uint indexed _balance);
             theCity.outcome, theCity.quotering, theCity.winning_degree);
         }
         else {
-            return (address(0x0), _betId, "", "", 0, 0, "00-00-00 00:00:00", "00-00-00 00:00:00", BetOutcome.Pending, 0, -1);
+            return (address(0x0), _betId, "", "", 0, 0, 0, 0, BetOutcome.Pending, 0, -1);
         }
     }
 
@@ -269,8 +298,8 @@ event LogUpdate(address indexed _owner, uint indexed _balance);
         string memory name,  // naam van de stad
         uint inzet,
         int guess,
-         string memory  made_on,  // datum wanneer de bet is gemaakt
-         string memory  weather_date, //
+         uint made_on,  // datum wanneer de bet is gemaakt
+         uint weather_date, //
          BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
        // WeatherData weather;

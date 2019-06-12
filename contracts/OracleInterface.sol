@@ -15,7 +15,7 @@ contract OracleInterface {
     function cityBetExists(bytes32 _betId) public view returns (bool);
 
     function addCityBet(address sender, string memory _cityId, string memory _cityName, uint _inzet, int _guess,
-     string memory  _made_on,  string memory  _weather_date, uint _quotering) public returns (bytes32);
+     uint _made_on,  uint _weather_date, uint _quotering) public returns (bytes32);
 
     function getCityBet(bytes32 _betId) public view returns (
         address userId,
@@ -24,8 +24,8 @@ contract OracleInterface {
         string memory name,  // naam van de stad
         uint inzet,
         int guess,
-        string made_on,  // datum wanneer de bet is gemaakt
-        string weather_date, //
+        uint made_on,  // datum wanneer de bet is gemaakt
+        uint weather_date, //
          BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
        // WeatherData weather;
@@ -39,8 +39,8 @@ contract OracleInterface {
         string memory name,  // naam van de stad
         uint inzet,
         int guess,
-         string memory  made_on,  // datum wanneer de bet is gemaakt
-         string memory  weather_date, //
+         uint made_on,  // datum wanneer de bet is gemaakt
+         uint weather_date, //
          BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
        // WeatherData weather;
@@ -52,7 +52,7 @@ contract OracleInterface {
         bytes32 betId,//id van de bet
         string memory name,  // naam van de stad
         int guess,
-         string memory  weather_date //
+         uint weather_date //
     );
 
     function testConnection() public pure returns (bool);

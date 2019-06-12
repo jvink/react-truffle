@@ -19,7 +19,7 @@ owner = msg.sender;
 emit LogUpdate(owner, address(this).balance);
  
 // Replace the next line with your version:
-OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
+OAR = OraclizeAddrResolverI(0x272aB463c44Dc1edDa1a8a7e7E24f0F6DAcFc384);
  
 oraclize_setProof(proofType_TLSNotary | proofStorage_IPFS);
 update();

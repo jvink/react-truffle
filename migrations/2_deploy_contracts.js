@@ -1,6 +1,5 @@
 var SimpleStorage = artifacts.require("./SimpleStorage.sol");
 var Bets = artifacts.require("./WeatherBets.sol");
-var OraclizeTest = artifacts.require("./OraclizeTest.sol");
 var WeatherOracle = artifacts.require("./WeatherOracle.sol");
 
 
@@ -13,9 +12,6 @@ module.exports = function(deployer, network, accounts) {
   deployer.then(async () => {
     await deployer.deploy(SimpleStorage);
     await deployer.deploy(Bets);
-    await deployer.deploy(
-      OraclizeTest,
-      { from: accounts[9], gas:6721975, value: 500000000000000000 });
     await deployer.deploy(WeatherOracle,
       { from: accounts[9], gas:6721975, value: 500000000000000000 });
   })

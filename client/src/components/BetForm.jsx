@@ -87,8 +87,8 @@ class App extends Component {
       inzet: this.state.inzet,
       dollar: parseInt(this.state.dollar),
       guess: parseInt(this.guess.current.value),
-      time: this.time.current.value,
-      timeOfNow: moment().format("YYYY-MM-DD HH:mm:ss"),
+      time: moment(this.time.current.value).unix(),
+      timeOfNow: moment().unix(),
       quotering: this.state.odds
     }
     placeBet(drizzle, drizzleState, betObject);
@@ -119,8 +119,13 @@ class App extends Component {
     const message = (<div><span className="text-danger"><b>Admin, Insert Oracle Address first. Without Single Quotes</b></span>
       <input className="form-control mt-2 mb-2" placeholder="address" ref={this.address} />
       <button type="button" onClick={this.setAddress} className="btn btn-warning mb-3">Insert Oracle Address from console here above</button></div>);
-      const hours = [0, 3, 6, 9, 12, 15, 18, 21];
-      const days = [2,3,4,5,6];
+      
+      var dollarberekening;
+      var etherberekening;
+      if(this.state.odds){
+         dollarberekening = (Math.round(this.state.dollar * this.state.odds * 100) / 100);
+         etherberekening = (Math.round(this.state.inzet * this.state.odds * 1000000) / 1000000);
+      } 
     // if it exists, then we display its value
     return (
       <div className="card col-7">
@@ -139,7 +144,7 @@ class App extends Component {
             </div>
             <label>Welke temperatuur wed je?</label>
             <div className="input-group mb-2">
-              <input type="number" className="form-control" placeholder={`Hoeveel graden wordt het in ${this.state.city}?`} onChange={this.onChangeTemperatuur}  ref={this.guess} required />
+              <input type="number" className="form-control" placeholder={`Hoeveel graden wordt het in ${this.state.city}?`} onChange={this.onChangeTemperatuur}min="-50" max="50"   ref={this.guess} required />
             </div>
             <div className="form-group">
               <label>Locatie</label>
@@ -161,10 +166,13 @@ class App extends Component {
               </select>
             </div>
 
-            <label><b>Quotering:  {this.state.odds && this.state.odds}</b>  </label>
+            {(this.state.odds && dollarberekening !==0 &&  etherberekening !==0 && 
+            !isNaN(dollarberekening) && !isNaN(etherberekening) &&
+            dollarberekening !== Infinity && etherberekening !== Infinity) &&
+            <div>  
+            <label> <b>Quotering:  {this.state.odds}</b> </label>  
                
-                <div>
-                  <div className="form-group">
+              <div className="form-group">
                     <table>
                       <tbody>
                         <tr>
@@ -179,15 +187,18 @@ class App extends Component {
                         </tr>
                       </tbody>
                     </table>
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <b>Je maakt kans op: ${this.state.odds && (Math.round(this.state.dollar * this.state.odds * 100) / 100)} Dollar!
-                   ({this.state.odds && (Math.round(this.state.inzet * this.state.odds * 1000000) / 1000000)} Ether.) </b>
-                  </div>
-
-
+                </div>        
+              <div className="form-group">
+                  <b>Je maakt kans op: ${dollarberekening} Dollar!
+                    ({etherberekening} Ether.) </b>
+              </div>           
+            </div>
+            }
+            {dollarberekening === Infinity &&
+            <span className="text-danger">Je bent echt al ver over je limiet.</span>}
+            {isNaN(dollarberekening)  &&
+            <span className="text-danger">Error</span>}
+                 
             {!this.state.addressReceived && message}
             <div style={{ display: 'flex' }}>
               <button type="button" className="btn btn-secondary">Annuleren</button>
