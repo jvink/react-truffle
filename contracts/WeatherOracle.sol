@@ -40,16 +40,16 @@ contract WeatherOracle is Ownable, usingOraclize {
   mapping(bytes32 => uint) cityIdToIndex;
     CityBet[] citybets;
 
-    mapping(bytes32 => bytes32[]) betIdToQueries;
+    mapping(bytes32 => bytes32) queryToBet;
     mapping(bytes32 => string) queryToResult;
 
      using DateLib for DateLib.DateTime;
 
     string public weather;
-    string public dt;
+    bytes32 public betId;
      
     event LogInfo(string description);
-    event LogWeatherUpdate(string weather);
+    event LogWeatherUpdate(string weather, bytes32 betId);
     event LogUpdate(address indexed _owner, uint indexed _balance);
 
     event Log(string text);
@@ -101,7 +101,8 @@ contract WeatherOracle is Ownable, usingOraclize {
         require(msg.sender == oraclize_cbAddress());
     
         weather = result;
-        emit LogWeatherUpdate(weather);
+        betId = queryToBet[id];
+        emit LogWeatherUpdate(weather, betId);
     }
  
     function getBalance() public returns (uint _balance) {
@@ -145,7 +146,7 @@ contract WeatherOracle is Ownable, usingOraclize {
             // Using XPath to to fetch the right element in the JSON response
             bytes32 id = keccak256(abi.encodePacked(_cityName, _weather_date, _sender));
 
-            do_query(1560346647, _cityName, id);
+            do_query(1560365159, _cityName, id);
            
             //hash the crucial info to get a unique id
             
@@ -164,11 +165,10 @@ contract WeatherOracle is Ownable, usingOraclize {
     function do_query (uint timestamp, string _cityName, bytes32 _betId) private {
         emit Log("Oraclize query were sent, waiting for the answer for getting temp and dt");
         
-        bytes32[] storage queries = betIdToQueries[_betId];
         //first query for temp_c
         bytes32 queryId = oraclize_query(timestamp,"URL", return_string(_cityName));
           //oraclizeCallbacks[queryId] = oraclizeCallback(oraclizeState.temp);
-          queries.push(queryId);
+        queryToBet[queryId] = _betId;
 
         // // second query for dt
         //   bytes32 queryId2 = oraclize_query(1560339117,"URL", return_string(_cityName, 1));
@@ -180,7 +180,7 @@ contract WeatherOracle is Ownable, usingOraclize {
         string memory one = "json(http://api.openweathermap.org/data/2.5/weather?q=";
         // string memory third = ",nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57).main.temp";
         // string memory fourth = ",nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57).dt";
-        string memory extra = ",nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57).[\"main\", \"dt\"]";
+        string memory extra = ",nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57).main.temp";
         // if(number == 0) {
         //     return strConcat(one, _city, third);
         // }

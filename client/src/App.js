@@ -5,6 +5,7 @@ import BetDetails from "./components/BetDetails";
 import "./css/App.css";
 import { getBetsByUser } from "./BetFunctions";
 import Modal from "./components/ModalforFinish";
+import moment from 'moment';
 
 
 class App extends Component {
@@ -55,8 +56,7 @@ console.log("komt ie hier nog langs?")
       }
       console.log(contract4);
 
-      this.setState({bets: await getBetsByUser(drizzle)});
-
+      this.setState({bets: await getBetsByUser(drizzle)})
       var value = await contract.methods.get().call()
        if(value) this.setState({storageValue: value})
 
@@ -65,8 +65,8 @@ console.log("komt ie hier nog langs?")
 
         this.listenToFinishedBets(contract4);
 
-        if(this.state.betinfo){
-
+        if(this.state.retrievedWeather){
+          this.checkforWin();
         }
 
         const balance = await contract4.methods.getBalance().call();
@@ -89,10 +89,12 @@ console.log("komt ie hier nog langs?")
          to: 'latest'
      }, (error, event) => { console.log(event); })
      .on('data', async(event) => {
-         console.log(event.returnValues.weather);
-         const weather = JSON.parse(event.returnValues.weather)
-         const retrievedWeather = {temp: weather[0].temp, dt: weather[1] }
+         console.log(event.returnValues);
+         const weather = event.returnValues.weather
+         const betId = event.returnValues.betId
+         const retrievedWeather = {temp: weather, retrievedId: betId }
          await this.setState({retrievedWeather})
+         this.checkforWin()
        
      })
      .on('changed', (event) => {
@@ -121,13 +123,20 @@ console.log("komt ie hier nog langs?")
     this.setState({betId: betId});  
   }
 
+
   checkforWin = () => {
     const {drizzle} = this.props;
     const {drizzleState, bets, retrievedWeather} = this.state;
-    // bets.forEach(bet => {
 
-      
-    // });
+    const betsToCheck = bets.filter((bet) => retrievedWeather.betId !== bet.id ).slice(0,1);
+    const betToCheck = betsToCheck[0];
+    console.log(betToCheck.guess, Math.round(retrievedWeather.temp))
+    if(betToCheck.guess === Math.round(retrievedWeather.temp)){
+      console.log("you win")
+    }
+    else {
+      console.log("you lose")
+    }
 
   }
 
@@ -143,7 +152,7 @@ console.log("komt ie hier nog langs?")
       <div className="container">
         <div className="row">
           {
-            this.state.changeContent ? <BetDetails bets={bets} onClickDetail={(changeContent) => this.setState({ changeContent: false})} betId={this.state.betId}/> 
+            this.state.changeContent ? <BetDetails bets={bets}  onClickDetail={(changeContent) => this.setState({ changeContent: false})} betId={this.state.betId}/>
             : <BetForm drizzle={drizzle} drizzleState={drizzleState} oracleReady={oracleReady} />
 
           }
@@ -158,7 +167,7 @@ console.log("komt ie hier nog langs?")
             {this.state.retrievedWeather && 
               <ul>
                 <li>{this.state.retrievedWeather.temp}</li>
-                <li>{this.state.retrievedWeather.dt}</li>    
+                <li>{this.state.retrievedWeather.betId}</li>    
               </ul>   
               } 
         </div>

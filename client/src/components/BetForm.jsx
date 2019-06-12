@@ -189,15 +189,13 @@ class App extends Component {
                     </table>
                 </div>        
               <div className="form-group">
-                  <b>Je maakt kans op: ${dollarberekening} Dollar!
-                    ({etherberekening} Ether.) </b>
+                  <span className="text-success"><b>Je maakt kans op: ${dollarberekening} Dollar!
+                    ({etherberekening} Ether.) </b></span>
               </div>           
             </div>
             }
             {dollarberekening === Infinity &&
             <span className="text-danger">Je bent echt al ver over je limiet.</span>}
-            {isNaN(dollarberekening)  &&
-            <span className="text-danger">Error</span>}
                  
             {!this.state.addressReceived && message}
             <div style={{ display: 'flex' }}>

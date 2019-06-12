@@ -38,7 +38,6 @@ class App extends Component {
     const { drizzleState, storageValue, drizzle } = this.props;
     const { bets, walletBalance } = this.state;
     console.log(drizzleState);
-    console.log(this.state.bets)
     if(drizzleState){
       
     }
