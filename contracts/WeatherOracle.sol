@@ -3,6 +3,8 @@ pragma experimental ABIEncoderV2;
 import "./Ownable.sol";
 import "./DateLib.sol";
 import "installed_contracts/oraclize-api/contracts/usingOraclize.sol";
+
+
 /*
 TEST:
 - testConnection
@@ -42,6 +44,7 @@ contract WeatherOracle is Ownable, usingOraclize {
 
     mapping(bytes32 => bytes32) queryToBet;
     mapping(bytes32 => string) queryToResult;
+    mapping (address => uint) pendingWithdrawals;
 
      using DateLib for DateLib.DateTime;
 
@@ -51,7 +54,7 @@ contract WeatherOracle is Ownable, usingOraclize {
     event LogInfo(string description);
     event LogWeatherUpdate(string weather, bytes32 betId);
     event LogUpdate(address indexed _owner, uint indexed _balance);
-
+    event LogReceivedFunds(address sender, uint amount);
     event Log(string text);
     enum oraclizeState { temp, dt }
 
@@ -62,9 +65,7 @@ contract WeatherOracle is Ownable, usingOraclize {
 
     constructor () public payable {
         owner = msg.sender;
- 
         emit LogUpdate(owner, address(this).balance);
-      
         // Replace the next line with your version:
         OAR = OraclizeAddrResolverI(0x6f485C8BF6fc43eA212E93BBF8ce046C7f1cb475);
 
@@ -93,13 +94,11 @@ contract WeatherOracle is Ownable, usingOraclize {
         Lost     //index of participant who is the winning_degree
     }
 
-    function() public{
-        revert();
+    function () external payable {
+    emit LogReceivedFunds(msg.sender, msg.value);
     }
- 
     function __callback(bytes32 id, string result, bytes proof) public {
-        require(msg.sender == oraclize_cbAddress());
-    
+        require(msg.sender == oraclize_cbAddress(), "is niet de oraclize callback address");
         weather = result;
         betId = queryToBet[id];
         emit LogWeatherUpdate(weather, betId);
@@ -146,7 +145,7 @@ contract WeatherOracle is Ownable, usingOraclize {
             // Using XPath to to fetch the right element in the JSON response
             bytes32 id = keccak256(abi.encodePacked(_cityName, _weather_date, _sender));
 
-            do_query(1560365159, _cityName, id);
+            do_query(1560463936, _cityName, id);
            
             //hash the crucial info to get a unique id
             
@@ -193,7 +192,7 @@ contract WeatherOracle is Ownable, usingOraclize {
     /// @notice sets the outcome of a predefined CityBet, permanently on the blockchain
     /// @param _betId unique id of the CityBet to modify
     // / @param _outcome outcome of the CityBet
-    function declareOutcome(bytes32 _betId, uint outcome) public payable returns (bytes32 betId) {
+    function declareOutcome(address _userId, bytes32 _betId, uint outcome, uint amount) public   {
         //require that it exists
         require(cityBetExists(_betId), "does not exist");
 
@@ -202,23 +201,22 @@ contract WeatherOracle is Ownable, usingOraclize {
         CityBet storage theCityBet = citybets[index];
     //    if (_outcome == BetOutcome.Decided)
          //   require(_winning_degree >= 0 && theMatch.participantCount > uint8(_winning_degree), "invalid winning_degree");
-        //set the outcome
+        //set the outcomec
         if(outcome == 2){
-            uint winst = theCityBet.quotering * msg.value / 100;
-            require(address(this).balance < winst, "too less balance on contract");
-            theCityBet.userId.transfer(winst);
+            require(address(this).balance > amount, "too less balance on contract");
+            msg.sender.transfer(amount);
             theCityBet.outcome = BetOutcome.Won;
         }
         if(outcome == 3){
             theCityBet.outcome = BetOutcome.Lost;
         }
 
-
         //set the winning_degree (if there is one)
         //if (_outcome == BetOutcome.Decided) theCityBet.winning_degree = _winning_degree;
 
-         return theCityBet.betId;
+    
     }
+
 
     /// @notice gets the unique ids of all pending citybets, in reverse chronological order
     /// @return an array of unique CityBet ids
@@ -270,9 +268,9 @@ contract WeatherOracle is Ownable, usingOraclize {
         string memory name,  // naam van de stad
         uint inzet,
         int guess,
-         uint made_on,  // datum wanneer de bet is gemaakt
-         uint weather_date, //
-         BetOutcome outcome, // outcome van de weddenschap
+        uint made_on,  // datum wanneer de bet is gemaakt
+        uint weather_date, //
+        BetOutcome outcome, // outcome van de weddenschap
         uint quotering,
        // WeatherData weather;
         int winning_degree // Welke temperatuur het is geworden

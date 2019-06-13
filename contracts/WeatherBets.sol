@@ -58,7 +58,6 @@ contract WeatherBets is Ownable {
 
     /// @notice determines whether or not the user has already bet on the given match
     /// @param _user address of a user
-   
     /// @param _guess the index of the participant to bet on (to win)
     /// @return true if the given user has already placed a bet on the given match
 
@@ -68,7 +67,6 @@ contract WeatherBets is Ownable {
 //     }
 
     /// @notice determines whether or not bets may still be accepted for the given match
-  
     /// @return true if the match is bettable
 
     // function _matchOpenForBetting(bytes32 _betId) private view returns (bool) {
@@ -85,7 +83,6 @@ contract WeatherBets is Ownable {
     function getBetsByUser() public returns (bytes32[] memory) {
             // mappings
         bytes32[] storage betIds = userToBets[msg.sender];
-        emit BetEmitted (betIds);
         return betIds;
     }
     /// @notice returns the full data of the specified match
@@ -130,7 +127,6 @@ contract WeatherBets is Ownable {
     }
 
     /// @notice places a non-rescindable bet on the given match
- 
     /// @param _guess the index of the participant chosen as winning_degree
     function placeBet(string memory _cityId, string memory _name, uint inzet, int _guess,  uint _weather_date,
      uint _date_of_now, uint _quotering) public payable {
@@ -146,40 +142,29 @@ contract WeatherBets is Ownable {
 
         //match must still be open for betting
     //    require(_matchOpenForBetting(_betId), "Match not open for betting");
-    
 
         //transfer the money into the account
 
-         bytes32 _betId = weatherOracle.addCityBet(msg.sender, _cityId, _name, inzet, _guess, _date_of_now, _weather_date, _quotering);
+        bytes32 _betId = weatherOracle.addCityBet(msg.sender, _cityId, _name, inzet, _guess, _date_of_now, _weather_date, _quotering);
 
         // // address addr1 = msg.sender;
         // // address payable addr3 = address(uint160(addr1)); // This is correct
-        // // addr3.transfer(msg.value);
-
+        weatherOracleAddr.transfer(msg.value);
         // //add the new bet
          Bet[] storage bets = cityToBets[_betId];
          bets.push(Bet(msg.sender, _betId, _cityId, _name, inzet, _guess, _date_of_now, _weather_date, _quotering))-1;
 
         // //add the mapping
          bytes32[] storage userBets = userToBets[msg.sender];
-         userBets.push(_betId);   // deze account doet een bet op deze betId
+         userBets.push(_betId);
+         
+         // deze account doet een bet op deze betId
 
         // getOracleAddress().transfer(msg.value);
     }
-    function setDecided(bytes32[] memory _betIds) public payable {
-
-         for (uint i = 0; i < _betIds.length; i++){
-            bytes32 current_id = _betIds[i];
-            weatherOracle.declareOutcome(current_id);
-
-            // BetForAPI memory theCityBet = BetForAPI(
-            //      userId,
-            //      betId,//id van de bet
-            //      name,
-            //      guess,
-            //      weather_date);
-        }
-         emit BetEmitted(_betIds);
+    function setDecided(address _userId, bytes32 _betId, uint _outcome, uint _amount) public payable {
+        weatherOracle.declareOutcome(_userId, _betId,_outcome, _amount);
+        emit BetEmitted(_betId);
     }
 
      /// @notice for testing; tests that the boxing oracle is callable
@@ -191,7 +176,7 @@ contract WeatherBets is Ownable {
         return weatherOracle.getAddress();
     }
     event BetEmitted (
-        bytes32[] betId//id van de bet
+        bytes32 betId//id van de bet
     );
 }
 

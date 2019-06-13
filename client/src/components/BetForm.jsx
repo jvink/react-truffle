@@ -23,21 +23,16 @@ class App extends Component {
 
   componentWillReceiveProps = (props) => {
     this.setState({ addressReceived: props.oracleReady })
-    console.log("komt ie hier nog langs 2/")
+ 
   }
   componentDidMount = async () => {
     this.setState({ addressReceived: this.props.oracleReady, weather: await getWeather(this.state.city) })
-
     const { weather } = this.state;
     this.state.date = weather[0].dt_txt;
     this.state.forecastWeather = await getForeCastWeather(this.state.date, this.state.city);
     this.state.odds = await getOdds(Math.round(this.state.forecastWeather), this.state.bet, this.state.weather, this.state.date)
     this.state.previewBets = await getPreviewBets(Math.round(this.state.forecastWeather));
     this.state.previewOdds = await getPreviewOdds(this.state.previewBets, this.state.forecastWeather, this.state.weather, this.state.date);
-    console.log(this.state.previewOdds);
-
-
-    console.log("komt ie hier nog langs 2/")
   }
   onChangeCity = async (e) => {
     let { value } = e.target;
@@ -54,7 +49,6 @@ class App extends Component {
   onChangeDate = async (e) => {
     let {value} = e.target;
     const date = value;
-    console.log(date);
     this.setState({ date })
     const forecastWeather = await getForeCastWeather(date, this.state.city);
     this.setState({ forecastWeather });
@@ -68,10 +62,7 @@ class App extends Component {
     let {value} = e.target;
     const bet = value;
     this.setState({ bet });
-    console.log(bet)
-
     const odds = await getOdds(Math.round(this.state.forecastWeather), bet, this.state.weather, this.state.date);
-    console.log(odds)
     this.setState({ odds });
     const previewBets =  await getPreviewBets(Math.round(this.state.forecastWeather));
     this.setState({ previewBets });
@@ -110,8 +101,6 @@ class App extends Component {
     if (!this.state.weather) {
       return <div>Weer is aan het laden...</div>;
     }
-
-    console.log(this.state.addressReceived)
     var date = moment().format("YYYY-MM-DD");
     var time = "00:00";
     var calcTimeAndDate = moment(date + ' ' + time).format("YYYY-MM-DD HH:mm");
@@ -211,11 +200,3 @@ class App extends Component {
 
 export default App;
 
-
-// {days.map( (x) => {
-//   return hours.map(y => {
-//     return <option value={moment(calcTimeAndDate).add(x, 'days').add(y, 'hours').format("YYYY-MM-DD HH:mm")}>{moment(calcTimeAndDate).add(x, 'days').add(y, 'hours').format("DD-MM-YYYY HH:mm")}</option>
-//   }
-//   )
-// })
-// }

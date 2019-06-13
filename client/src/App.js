@@ -3,14 +3,14 @@ import BetForm from "./components/BetForm";
 import BetList from "./components/BetList";
 import BetDetails from "./components/BetDetails";
 import "./css/App.css";
-import { getBetsByUser } from "./BetFunctions";
+import { getBetsByUser, changeOutcome } from "./BetFunctions";
 import Modal from "./components/ModalforFinish";
 import moment from 'moment';
 
 
 class App extends Component {
   state = { ETH: 0, loading: true, drizzleState: null, storageValue: 0, stackId: null, oracleReady: false, bets: [], detail: null, changeContent: false, betId: null,
-    retrievedWeather: null, ModalOpen: false
+    retrievedWeather: null, ModalOpen: false, current_account:null, betTransactionFinished:false
   
     };
   inzet = React.createRef();
@@ -22,9 +22,12 @@ class App extends Component {
     this.unsubscribe = drizzle.store.subscribe(async () => {
       // every time the store updates, grab the state from drizzle
       const drizzleState = drizzle.store.getState();
-      //get accounts
+            //get accounts
+
+      const account = drizzleState.accounts[0];    
+
       if (drizzleState.drizzleStatus.initialized) {
-        this.setState({ loading: false, drizzleState }, this.readValue);
+        this.setState({ loading: false, drizzleState, current_account: account }, this.readValue);
       }
     });
   };
@@ -56,16 +59,18 @@ console.log("komt ie hier nog langs?")
       }
       console.log(contract4);
 
+      this.listenToInfo(contract4);
+
       this.setState({bets: await getBetsByUser(drizzle)})
       var value = await contract.methods.get().call()
        if(value) this.setState({storageValue: value})
 
       if(this.state.oracleReady){
-        this.listenToInfo(contract4);
+        
 
         this.listenToFinishedBets(contract4);
 
-        if(this.state.retrievedWeather){
+        if(this.state.retrievedWeather && this.state.bets ){
           this.checkforWin();
         }
 
@@ -73,6 +78,7 @@ console.log("komt ie hier nog langs?")
         console.log(balance)
         //this.setState({balance});
       }  
+      
      
 
           }
@@ -104,7 +110,7 @@ console.log("komt ie hier nog langs?")
   }
 
   listenToInfo = (contract) => {
-    contract.events.LogInfo({
+    contract.events.LogUpdate({
       // Using an array means OR: e.g. 20 or 23
          fromBlock: 0,
          to: 'latest'
@@ -127,17 +133,24 @@ console.log("komt ie hier nog langs?")
   checkforWin = () => {
     const {drizzle} = this.props;
     const {drizzleState, bets, retrievedWeather} = this.state;
+    console.log(bets)
+    if(bets && bets.length !== 0){
 
+      console.log(bets)
     const betsToCheck = bets.filter((bet) => retrievedWeather.betId !== bet.id ).slice(0,1);
     const betToCheck = betsToCheck[0];
     console.log(betToCheck.guess, Math.round(retrievedWeather.temp))
-    if(betToCheck.guess === Math.round(retrievedWeather.temp)){
-      console.log("you win")
+    console.log(betToCheck.outcome)
+    if(parseInt(betToCheck.outcome) === 0){
+      if(13 === Math.round(retrievedWeather.temp)){
+        console.log("you win")
+        changeOutcome(drizzle, drizzleState, betToCheck)
+      }
+      else {
+        console.log("you lose")
+      }
     }
-    else {
-      console.log("you lose")
-    }
-
+  }
   }
 
   render() {

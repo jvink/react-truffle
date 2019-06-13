@@ -1,5 +1,4 @@
-import { getPastWeather } from "./Weather";
-import moment from 'moment';
+import {Convert} from "./Convert";
 
 const parseDataIntoReadable = (bet) => {
     const betObject = {
@@ -89,33 +88,23 @@ export const getBetsByUser = async (drizzle) => {  // Deze is nu in gebruik
         return listBets;
     
 }
-
-
-
-export const changeOutcome = async (drizzle, drizzleState, bets) => {
-
-    var listBetIds = [];
+export const changeOutcome = async (drizzle, drizzleState, bet) => {
+        
     try {
-  
-        bets.forEach(async(bet) => {
-         //  const checkExpired = Date.now() /1000 > bet.weather_date;
-           // if (checkExpired) {
-                if(parseInt(bet.outcome) !== 1){
-                    listBetIds.push(bet.id);
-                }
-            //}       
-        });
-        const contract = drizzle.contracts.WeatherBets;
-        if(listBetIds.length !== 0){
-            //await contract.methods.checkwin(listBetIds);
-            
-            //   await contract.methods.setDecided(listBetIds)
-            //  .send({ from: drizzleState.accounts[0], gas: 3000000 });
-            // checkIfWon(drizzle, contract);
-        }
-        else{
-            alert("Je hebt nog lopende weddenschappen.")
-        }     
+            const contract = drizzle.contracts.WeatherOracle;
+            const convertions = await Convert();
+            let ratio = convertions[0].price_usd;
+            let dollar = 1 / parseFloat(ratio)
+            let converted = bet.inzet * dollar
+            let toWei = converted * 1000000000000000000;
+            const wei = bet.quotering * toWei / 100;
+            console.log(toWei)
+            console.log(contract.address)
+
+            if(convertions){
+                await contract.methods.declareOutcome(drizzleState.accounts[0], bet.id, 2, wei).send()
+            .then(() => console.log("gelukt"), (error) => {console.log(error)});
+            }
     }
     catch{
         console.log("something wrong in check date bets")

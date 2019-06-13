@@ -42,6 +42,11 @@
     font-weight: bolder;
 }
 
+.lost {
+  border-bottom: 2px dotted rgb(245, 115, 10);
+  font-weight: bolder;
+}
+
 .wonWrapper {
     text-align: center;
 }

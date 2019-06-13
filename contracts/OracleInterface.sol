@@ -47,17 +47,15 @@ contract OracleInterface {
         int winning_degree // Welke temperatuur het is geworden
          );
 
-    function declareOutcome(bytes32 _betId) public returns (
-        address userId,
-        bytes32 betId,//id van de bet
-        string memory name,  // naam van de stad
-        int guess,
-         uint weather_date //
-    );
+    function declareOutcome(address _userId, bytes32 _betId, uint outcome, uint amount) public;
 
     function testConnection() public pure returns (bool);
 
     function getAddress() public view returns (address);
 
     function addTestData() public;
+
+    function () external payable;
+
+    function getBalance() public returns (uint _balance);
 }
