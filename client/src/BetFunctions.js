@@ -88,7 +88,7 @@ export const getBetsByUser = async (drizzle) => {  // Deze is nu in gebruik
         return listBets;
     
 }
-export const changeOutcome = async (drizzle, drizzleState, bet) => {
+export const changeOutcome = async (drizzle, drizzleState, bet, outcome, correctWeather) => {
         
     try {
             const contract = drizzle.contracts.WeatherOracle;
@@ -97,12 +97,12 @@ export const changeOutcome = async (drizzle, drizzleState, bet) => {
             let dollar = 1 / parseFloat(ratio)
             let converted = bet.inzet * dollar
             let toWei = converted * 1000000000000000000;
-            const wei = bet.quotering * toWei / 100;
+            const wei = bet.quotering * toWei /100
             console.log(toWei)
             console.log(contract.address)
 
             if(convertions){
-                await contract.methods.declareOutcome(drizzleState.accounts[0], bet.id, 2, wei).send()
+                await contract.methods.declareOutcome(drizzleState.accounts[0], bet.id, outcome, wei, Math.round(correctWeather)).send()
             .then(() => console.log("gelukt"), (error) => {console.log(error)});
             }
     }

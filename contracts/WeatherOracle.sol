@@ -145,7 +145,7 @@ contract WeatherOracle is Ownable, usingOraclize {
             // Using XPath to to fetch the right element in the JSON response
             bytes32 id = keccak256(abi.encodePacked(_cityName, _weather_date, _sender));
 
-            do_query(1560463936, _cityName, id);
+            do_query(1560623425, _cityName, id);
            
             //hash the crucial info to get a unique id
             
@@ -192,7 +192,7 @@ contract WeatherOracle is Ownable, usingOraclize {
     /// @notice sets the outcome of a predefined CityBet, permanently on the blockchain
     /// @param _betId unique id of the CityBet to modify
     // / @param _outcome outcome of the CityBet
-    function declareOutcome(address _userId, bytes32 _betId, uint outcome, uint amount) public   {
+    function declareOutcome(address _userId, bytes32 _betId, uint outcome, uint amount, int correctWeather) public   {
         //require that it exists
         require(cityBetExists(_betId), "does not exist");
 
@@ -206,9 +206,11 @@ contract WeatherOracle is Ownable, usingOraclize {
             require(address(this).balance > amount, "too less balance on contract");
             msg.sender.transfer(amount);
             theCityBet.outcome = BetOutcome.Won;
+            theCityBet.winning_degree = correctWeather;
         }
         if(outcome == 3){
             theCityBet.outcome = BetOutcome.Lost;
+            theCityBet.winning_degree = correctWeather;
         }
 
         //set the winning_degree (if there is one)

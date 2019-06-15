@@ -34,11 +34,11 @@ class App extends Component {
         <ul>
           <li>{drizzleState && walletBalance}</li>
         </ul>
-        <h4>Jouw adres: </h4>
+        <h4>Uw adres: </h4>
         <ul>
           <li>{drizzleState && drizzleState.accounts[0]}</li>
         </ul>
-        <h4>Jouw weddenschappen:</h4>
+        <h4>Uw weddenschappen:</h4>
         {bets && bets.map((bet, i) =>  {
            if (parseInt(bet.outcome) === 0)  {
             return <BetComponent bet={bet} keyTest={i} type={0} onClickDetail={(bet) => this.props.onClickDetail(bet)} onClickSetBetId={(betId) => this.props.onClickSetBetId(betId)}/>;

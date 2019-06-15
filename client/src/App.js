@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import BetForm from "./components/BetForm";
 import BetList from "./components/BetList";
 import BetDetails from "./components/BetDetails";
+import {ToastsContainer, ToastsStore} from 'react-toasts';
 import "./css/App.css";
 import { getBetsByUser, changeOutcome } from "./BetFunctions";
-import Modal from "./components/ModalforFinish";
-import moment from 'moment';
+
 
 
 class App extends Component {
@@ -59,8 +59,6 @@ console.log("komt ie hier nog langs?")
       }
       console.log(contract4);
 
-      this.listenToInfo(contract4);
-
       this.setState({bets: await getBetsByUser(drizzle)})
       var value = await contract.methods.get().call()
        if(value) this.setState({storageValue: value})
@@ -69,10 +67,6 @@ console.log("komt ie hier nog langs?")
         
 
         this.listenToFinishedBets(contract4);
-
-        if(this.state.retrievedWeather && this.state.bets ){
-          this.checkforWin();
-        }
 
         const balance = await contract4.methods.getBalance().call();
         console.log(balance)
@@ -99,8 +93,10 @@ console.log("komt ie hier nog langs?")
          const weather = event.returnValues.weather
          const betId = event.returnValues.betId
          const retrievedWeather = {temp: weather, retrievedId: betId }
-         await this.setState({retrievedWeather})
-         this.checkforWin()
+         await this.setState({retrievedWeather}, ()=>{
+          this.checkforWin()
+         })
+        
        
      })
      .on('changed', (event) => {
@@ -109,21 +105,7 @@ console.log("komt ie hier nog langs?")
      .on('error', console.error);
   }
 
-  listenToInfo = (contract) => {
-    contract.events.LogUpdate({
-      // Using an array means OR: e.g. 20 or 23
-         fromBlock: 0,
-         to: 'latest'
-     }, (error, event) => { console.log(event); })
-     .on('data', (event) => {
-         console.log(event.returnValues);
-     })
-     .on('changed', (event) => {
-         // remove event from local database
-     })
-     .on('error', console.error);
-  }
-
+ 
 
   setBetId = async (betId) => {
     this.setState({betId: betId});  
@@ -137,19 +119,29 @@ console.log("komt ie hier nog langs?")
     if(bets && bets.length !== 0){
 
       console.log(bets)
-    const betsToCheck = bets.filter((bet) => retrievedWeather.betId !== bet.id ).slice(0,1);
-    const betToCheck = betsToCheck[0];
+    const betsToCheck = bets.filter((bet) => retrievedWeather.retrievedId === bet.id );
+
+    betsToCheck.forEach(betToCheck => {
+      
     console.log(betToCheck.guess, Math.round(retrievedWeather.temp))
     console.log(betToCheck.outcome)
     if(parseInt(betToCheck.outcome) === 0){
-      if(13 === Math.round(retrievedWeather.temp)){
+      if(18 === Math.round(retrievedWeather.temp)){
+        ToastsStore.info("Een weddenschap is verlopen. Voltooi de transactie.")
         console.log("you win")
-        changeOutcome(drizzle, drizzleState, betToCheck)
+        changeOutcome(drizzle, drizzleState, betToCheck, 2,  retrievedWeather.temp).then(()=>{
+          ToastsStore.success("Weddenschap gewonnen!");
+        })
       }
       else {
+        ToastsStore.info("Een weddenschap is verlopen. Voltooi de transactie.")
         console.log("you lose")
+        changeOutcome(drizzle, drizzleState, betToCheck, 3,  retrievedWeather.temp).then(()=>{
+          ToastsStore.success("Weddenschap gewonnen!")
+        }) 
       }
     }
+  })
   }
   }
 
@@ -175,16 +167,10 @@ console.log("komt ie hier nog langs?")
           <BetList drizzle={drizzle} drizzleState={drizzleState} storageValue={storageValue} bets={bets} onClickDetail={(changeContent) => this.setState({ changeContent: true })} 
           onClickSetBetId={this.setBetId} />
 
-            {this.state.balance && this.state.balance}
- 
-            {this.state.retrievedWeather && 
-              <ul>
-                <li>{this.state.retrievedWeather.temp}</li>
-                <li>{this.state.retrievedWeather.betId}</li>    
-              </ul>   
-              } 
         </div>
-        <Modal isOpen={this.state.ModalOpen}/>
+        <ToastsContainer store={ToastsStore}/>
+
+    
       </div>
     );
   }

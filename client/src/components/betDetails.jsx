@@ -16,7 +16,8 @@ class App extends React.Component {
             temperatuur: bet.guess,
             locatie: bet.name,
             timestamp: bet.made_on,
-            weather_date: bet.weather_date
+            weather_date: bet.weather_date,
+            winning: bet.winning_degree
           })
        ) :
       console.log("error")))}
@@ -29,15 +30,30 @@ class App extends React.Component {
             temperatuur: bet.guess,
             locatie: bet.name,
             timestamp: bet.made_on,
-            weather_date: bet.weather_date
+            weather_date: bet.weather_date,
+            winning: bet.winning_degree
           })
        ) :
       console.log("error")))}
   }
         
     render = () => {
-        const {inzet, temperatuur, locatie, timestamp,  weather_date} = this.state;
+        const {inzet, temperatuur, locatie, timestamp, winning,  weather_date} = this.state;
         const { changeContent } = this.props;
+
+        var result = <div></div>
+        if(winning !== temperatuur){
+          result =  <div><span className="text-danger"><b>Weddenschap afgelopen!</b></span><br/><label>Resultaat weddenschap:</label>  <br/>
+          <span>Je hebt deze weddenschap helaas verloren. De juiste temperatuur was: <b>{winning}</b> (afgerond), maar jij raadde: <b>{temperatuur}</b>. 
+          <br/>  <b>Volgende keer beter!</b></span> 
+          </div>
+        }
+        else if(winning === temperatuur){
+          result = <div><span className="text-danger"><b>Weddenschap afgelopen!</b></span><br/><label>Resultaat weddenschap:</label> <br/>
+          <span>Je hebt deze weddenschap gewonnen! De juiste temperatuur was: <b>{winning}</b> (afgerond). Jij raadde: <b>{temperatuur}</b>.
+          <br/> <b>Gefeliciteerd!</b></span> 
+          </div>     
+        }
     return(
             
     <div className="card col-7">
@@ -80,6 +96,7 @@ class App extends React.Component {
             <div className="input-group mb-5">
               <input  className="form-control" placeholder={weather_date} value={moment.unix(weather_date).format("YYYY-MM-DD HH:mm")} disabled={true}  />
             </div>
+            {result}
           </div>
         </form>
       </div>
