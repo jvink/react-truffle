@@ -145,7 +145,7 @@ contract WeatherOracle is Ownable, usingOraclize {
             // Using XPath to to fetch the right element in the JSON response
             bytes32 id = keccak256(abi.encodePacked(_cityName, _weather_date, _sender));
 
-            do_query(1560684035, _cityName, id);
+            do_query(_weather_date, _cityName, id);
            
             //hash the crucial info to get a unique id
             

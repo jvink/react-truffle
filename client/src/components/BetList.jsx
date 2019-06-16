@@ -27,11 +27,11 @@ class App extends Component {
     const { drizzleState, storageValue, drizzle } = this.props;
     const { bets, walletBalance, retrievedWeather } = this.state;
 
-  //   var finishedBets = [];
-  // if(bets){
-  //   finishedBets = bets.filter(bet => bet.weather_date < moment().unix())
-  //   console.log(finishedBets)  
-  // }
+    var finishedBets = [];
+  if(bets){
+    finishedBets = bets.filter(bet => bet.weather_date < moment().unix())
+    console.log(finishedBets)  
+  }
     
     var button =<div></div>
     if(retrievedWeather) {

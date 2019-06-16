@@ -118,7 +118,7 @@ console.log("komt ie hier nog langs?")
 try{
     if(bets && bets.length !== 0){
 
-      console.log(bets)
+    console.log(bets)
     const betsToCheck = bets.filter((bet) => retrievedWeather.retrievedId === bet.id );
 
     betsToCheck.forEach(betToCheck => {
@@ -128,7 +128,7 @@ try{
     if(parseInt(betToCheck.outcome) === 0){
       if(betToCheck.guess === Math.round(retrievedWeather.temp)){
         ToastsStore.info("Een weddenschap is verlopen. Voltooi de transactie.")
-        console.log("you win")
+
         changeOutcome(drizzle, drizzleState, betToCheck, 2,  retrievedWeather.temp).then(()=>{
           ToastsStore.success("Weddenschap Gewonnen!");
         })
@@ -136,7 +136,7 @@ try{
       }
       else {
         ToastsStore.info("Een weddenschap is verlopen. Voltooi de transactie.")
-        console.log("you lose")
+
         changeOutcome(drizzle, drizzleState, betToCheck, 3,  retrievedWeather.temp).then(()=>{
           ToastsStore.success("Weddenschap Verloren!")
         }) 
