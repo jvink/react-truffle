@@ -131,36 +131,18 @@ contract WeatherBets is Ownable {
     function placeBet(string memory _cityId, string memory _name, uint inzet, int _guess,  uint _weather_date,
      uint _date_of_now, uint _quotering) public payable {
 
-        //bet must be above a certain minimum
-     //   require(msg.value >= minimumBet, "Bet amount must be >= minimum bet");
-
-        //make sure that weatherBet exists
-     //   require(weatherOracle.cityBetExists(_betId), "Specified weatherbet not found");
-
-        //require that chosen winning_degree falls within the defined number of participants for match
-       //  require(_betIsValid(msg.sender, _betId, _guess), "Bet is not valid");
-
-        //match must still be open for betting
-    //    require(_matchOpenForBetting(_betId), "Match not open for betting");
-
-        //transfer the money into the account
-
+        //initieer functie add AddCityBet
         bytes32 _betId = weatherOracle.addCityBet(msg.sender, _cityId, _name, inzet, _guess, _date_of_now, _weather_date, _quotering);
-
-        // // address addr1 = msg.sender;
-        // // address payable addr3 = address(uint160(addr1)); // This is correct
-        weatherOracleAddr.transfer(msg.value);
+        
+        weatherOracleAddr.transfer(msg.value); // transfer inzet naar database contract WeatherOracle
         // //add the new bet
-         Bet[] storage bets = cityToBets[_betId];
-         bets.push(Bet(msg.sender, _betId, _cityId, _name, inzet, _guess, _date_of_now, _weather_date, _quotering))-1;
+         Bet[] storage bets = cityToBets[_betId];  // maak nieuwe slot aan voor een bet
+         bets.push(Bet(msg.sender, _betId, _cityId, _name, inzet, _guess, _date_of_now, _weather_date, _quotering))-1;  // sla bet op
 
         // //add the mapping
          bytes32[] storage userBets = userToBets[msg.sender];
-         userBets.push(_betId);
+         userBets.push(_betId);  // sla bet op user id
          
-         // deze account doet een bet op deze betId
-
-        // getOracleAddress().transfer(msg.value);
     }
     function setDecided(address _userId, bytes32 _betId, uint _outcome, uint _amount) public payable {
         weatherOracle.declareOutcome(_userId, _betId,_outcome, _amount);

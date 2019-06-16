@@ -137,32 +137,12 @@ const checkIfWon =(drizzle, contract) =>{
      var losingBets = [];
     try{
         const contract = drizzle.contracts.WeatherBets;
-        // const rawBet = await contract.methods.getCityBet(onlyOne).call();
-        //     const readableBet = parseDataIntoReadable(rawBet); console.log(readableBet)
-        //     const weather = getPastWeather(readableBet.name, '2019-06-02');
-        //     // listBets.push(readableBet);
-        //     console.log(weather);
-        
         console.log(betIds)
         betIds.forEach(async (betId) => { const rawBet = await contract.methods.getCityBet(betId).call();
             const readableBet = parseDataIntoReadable(rawBet); console.log(readableBet)
 
             console.log(readableBet.name)
-          //  const weather = await getPastWeather(readableBet.name, formatDate(new Date(1559744448 *1000)));
 
-        //    const weather_at_specific_hour = weather.forecast.forecastday[0].hour[gethour(new Date(1559744448 *1000))].temp_c;
-          //  console.log(weather_at_specific_hour);
-         //  const win = parseInt(weather_at_specific_hour) === readableBet.guess;
-            // if(win){
-            //     console.log("win, insert here smart contract functie met betaling en outcome change");
-            //     winningBets.push(betId);  // nog functie komen om naar contract te sturen.
-            //     alert("Je hebt gewonnen")
-            // }
-            // else{    
-            //     console.log("You lost man, no moneys back");    
-            //     losingBets.push(betId);
-            //     alert("niks gewonnen helaas")
-            // }
         });
    
 

@@ -125,7 +125,7 @@ contract WeatherOracle is Ownable, usingOraclize {
         return (index > 0);
     }
     /// @notice puts a new pending CityBet into the blockchain
-    /// @param _cityName descriptive name for the CityBet (e.g. Pac vs. Mayweather 2016)
+    /// @param _cityName descriptive name for the CityBet
     /// @param _weather_date weather_date set for the CityBet
     /// @return the unique id of the newly created CityBet
     function addCityBet(address _sender, string memory _cityId, string memory _cityName, uint _inzet,
@@ -139,21 +139,16 @@ contract WeatherOracle is Ownable, usingOraclize {
         
             emit LogInfo("Oraclize query was sent, standing by for the answer..");
 
-            // string[] memory list;
-            // list[0] = return_string(_cityName, 0);
-            // list[1] = return_string(_cityName, 1);
-            // Using XPath to to fetch the right element in the JSON response
+            // maak id aan gebaseerd op cityname, weatherdate en sender
             bytes32 id = keccak256(abi.encodePacked(_cityName, _weather_date, _sender));
 
-            do_query(_weather_date, _cityName, id);
-           
-            //hash the crucial info to get a unique id
+            do_query(_weather_date, _cityName, id); //Here is where all the magic is happening
             
             // //require that the CityBet be unique (not already added)
              require(!cityBetExists(id), "does exist already");
 
              uint newIndex = citybets.push(CityBet(_sender, id, _cityId, _cityName, _inzet, _guess, _made_on, _weather_date,
-             BetOutcome.Pending, _quotering, -100))-1;
+             BetOutcome.Pending, _quotering, -100))-1;   //opslaan van de bet voor een nieuwe index
              cityIdToIndex[id] = newIndex+1;
 
             //return the unique id of the new CityBet
@@ -163,29 +158,17 @@ contract WeatherOracle is Ownable, usingOraclize {
     }
     function do_query (uint timestamp, string _cityName, bytes32 _betId) private {
         emit Log("Oraclize query were sent, waiting for the answer for getting temp and dt");
-        
+
         //first query for temp_c
         bytes32 queryId = oraclize_query(timestamp,"URL", return_string(_cityName));
-          //oraclizeCallbacks[queryId] = oraclizeCallback(oraclizeState.temp);
+
         queryToBet[queryId] = _betId;
 
-        // // second query for dt
-        //   bytes32 queryId2 = oraclize_query(1560339117,"URL", return_string(_cityName, 1));
-        //    oraclizeCallbacks[queryId2] = oraclizeCallback(oraclizeState.dt);
-        //     queryIdToBetId[queryId2] = _betId;
-        //     queries.push(queryId2);
     }
     function return_string(string _city) private returns (string ) {
         string memory one = "json(http://api.openweathermap.org/data/2.5/weather?q=";
-        // string memory third = ",nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57).main.temp";
-        // string memory fourth = ",nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57).dt";
         string memory extra = ",nl&units=metric&APPID=55e3d06cfe25b54ec349eae880b98d57).main.temp";
-        // if(number == 0) {
-        //     return strConcat(one, _city, third);
-        // }
-        // else{
-        //     return strConcat(one, _city, fourth);
-        // }
+
         return strConcat(one, _city, extra);
     }
 
