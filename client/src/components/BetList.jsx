@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "../css/App.css";
 import BetComponent from "./Bet";
 import { changeOutcome } from "../BetFunctions";
-
+import moment from 'moment';
 class App extends Component {
   state = { stackId: null, bets: null, walletBalance: 0 };
 
@@ -17,6 +17,7 @@ class App extends Component {
  
   componentWillReceiveProps = async(props)=>{
     await this.setState({bets: props.bets})
+    await this.setState({retrievedWeather: props.retrievedWeather})
   }
 
   render() {
@@ -24,12 +25,24 @@ class App extends Component {
       return <div>Loading Drizzle, Web3, Metamask...</div>;
     }
     const { drizzleState, storageValue, drizzle } = this.props;
-    const { bets, walletBalance } = this.state;
-  
+    const { bets, walletBalance, retrievedWeather } = this.state;
+
+  //   var finishedBets = [];
+  // if(bets){
+  //   finishedBets = bets.filter(bet => bet.weather_date < moment().unix())
+  //   console.log(finishedBets)  
+  // }
+    
+    var button =<div></div>
+    if(retrievedWeather) {
+      button = <div><button type="button" className="btn btn-success mb-2  mt-2" onClick={this.props.checkforWin}>Check Resultaat</button>
+     </div>
+    }
     // if it exists, then we display its value
     return (
       <div className="card col-4">
         <h2>Wallet</h2>
+        {button}
         <h4>Balans: </h4>
         <ul>
           <li>{drizzleState && walletBalance}</li>
@@ -50,6 +63,7 @@ class App extends Component {
             }
           })
         }
+      
       </div>
     );
   }

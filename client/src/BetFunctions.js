@@ -26,7 +26,7 @@ export const placeBet = async (drizzle, drizzleState, bet) => {
     // //placeBet(string memory _cityId, string memory _name, uint _guess, uint _weather_date, uint _date_of_now)
     await contract.methods.placeBet(bet.cityId.toString(), bet.name, parseInt(bet.dollar),
     parseInt(bet.guess), parseInt(bet.time), parseInt(bet.timeOfNow), parseInt(bet.quotering) * 100)  //plaats bet
-    .send({ from: drizzleState.accounts[0], value: Math.round(wei), gas: 2000000 });
+    .send({ from: drizzleState.accounts[0], value: Math.round(wei)});
     console.log("stap3")
   
 }

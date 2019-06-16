@@ -59,15 +59,17 @@ console.log("komt ie hier nog langs?")
       }
       console.log(contract4);
 
-      this.setState({bets: await getBetsByUser(drizzle)})
+     
       var value = await contract.methods.get().call()
        if(value) this.setState({storageValue: value})
 
       if(this.state.oracleReady){
-        
+        this.setState({bets: await getBetsByUser(drizzle)}, () =>{
+          this.listenToFinishedBets(contract4);
 
-        this.listenToFinishedBets(contract4);
+        })
 
+       
         const balance = await contract4.methods.getBalance().call();
         console.log(balance)
         //this.setState({balance});
@@ -93,16 +95,13 @@ console.log("komt ie hier nog langs?")
          const weather = event.returnValues.weather
          const betId = event.returnValues.betId
          const retrievedWeather = {temp: weather, retrievedId: betId }
-         await this.setState({retrievedWeather}, ()=>{
-          this.checkforWin()
-         })
-        
-       
+         await this.setState({retrievedWeather})     
      })
      .on('changed', (event) => {
          // remove event from local database
      })
      .on('error', console.error);
+     
   }
 
  
@@ -115,7 +114,8 @@ console.log("komt ie hier nog langs?")
   checkforWin = () => {
     const {drizzle} = this.props;
     const {drizzleState, bets, retrievedWeather} = this.state;
-    console.log(bets)
+    var BreakException= {};
+try{
     if(bets && bets.length !== 0){
 
       console.log(bets)
@@ -126,23 +126,31 @@ console.log("komt ie hier nog langs?")
     console.log(betToCheck.guess, Math.round(retrievedWeather.temp))
     console.log(betToCheck.outcome)
     if(parseInt(betToCheck.outcome) === 0){
-      if(18 === Math.round(retrievedWeather.temp)){
+      if(betToCheck.guess === Math.round(retrievedWeather.temp)){
         ToastsStore.info("Een weddenschap is verlopen. Voltooi de transactie.")
         console.log("you win")
         changeOutcome(drizzle, drizzleState, betToCheck, 2,  retrievedWeather.temp).then(()=>{
-          ToastsStore.success("Weddenschap gewonnen!");
+          ToastsStore.success("Weddenschap Gewonnen!");
         })
+       
       }
       else {
         ToastsStore.info("Een weddenschap is verlopen. Voltooi de transactie.")
         console.log("you lose")
         changeOutcome(drizzle, drizzleState, betToCheck, 3,  retrievedWeather.temp).then(()=>{
-          ToastsStore.success("Weddenschap gewonnen!")
+          ToastsStore.success("Weddenschap Verloren!")
         }) 
+        
       }
+      throw BreakException;
     }
+
   })
   }
+}
+catch(e){
+  if (e!==BreakException) throw e;
+}
   }
 
   render() {
@@ -165,7 +173,7 @@ console.log("komt ie hier nog langs?")
 
           </div>
           <BetList drizzle={drizzle} drizzleState={drizzleState} storageValue={storageValue} bets={bets} onClickDetail={(changeContent) => this.setState({ changeContent: true })} 
-          onClickSetBetId={this.setBetId} />
+          onClickSetBetId={this.setBetId}  checkforWin={this.checkforWin}retrievedWeather={this.state.retrievedWeather}/>
 
         </div>
         <ToastsContainer store={ToastsStore}/>
